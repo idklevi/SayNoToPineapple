@@ -1,0 +1,6 @@
+{
+  "name": "Ghost — Conversational Copilot HUD",
+  "description": "A real-time neo-brutalist conversational decision-support assistant and peripheral HUD for corporate negotiations, sales, and interviews.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

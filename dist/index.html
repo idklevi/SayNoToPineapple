@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghost — Conversational Copilot HUD</title>
+  <meta name="description" content="A real-time neo-brutalist conversational decision-support assistant and peripheral HUD for corporate negotiations, sales, and interviews." />
+  <meta property="og:title" content="Ghost — Conversational Copilot HUD" />
+  <meta property="og:description" content="A real-time neo-brutalist conversational decision-support assistant and peripheral HUD for corporate negotiations, sales, and interviews." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans (bold stark display) & JetBrains Mono (monospace telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>*,:before,:after{box-sizing:border-box}body{color:#0a0a0a;background-color:#f4f4ee;font-family:Plus Jakarta Sans,-apple-system,BlinkMacSystemFont,sans-serif}.font-mono-app{font-family:JetBrains Mono,monospace}.nb-box{background-color:#fff;border:2px solid #000;box-shadow:4px 4px #000}.nb-box-sm{background-color:#fff;border:2px solid #000;box-shadow:2px 2px #000}.nb-box-lg{background-color:#fff;border:2.5px solid #000;box-shadow:6px 6px #000}.nb-btn{cursor:pointer;border:2px solid #000;font-weight:800;transition:all .12s ease-in-out;box-shadow:3px 3px #000}.nb-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px #000}.nb-btn:active{transform:translate(2px,2px);box-shadow:0 0 #000}.nb-badge{border:1.5px solid #000;font-weight:800;box-shadow:1.5px 1.5px #000}::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#e5e5de;border-left:2px solid #000}::-webkit-scrollbar-thumb{background:#000;border:1px solid #fff}::-webkit-scrollbar-thumb:hover{background:#333}@keyframes neoPulseRed{0%,to{box-shadow:4px 4px #000,0 0 #ff5c5c00}50%{box-shadow:5px 5px #000,0 0 0 4px #ff5c5c}}@keyframes neoPulseGreen{0%,to{box-shadow:4px 4px #000,0 0 #22c55e00}50%{box-shadow:5px 5px #000,0 0 0 4px #22c55e}}.hud-alert-objection{background-color:#fff2f2!important;border:3px solid #000!important;animation:1.3s infinite neoPulseRed!important}.hud-alert-leverage{background-color:#f0fdf4!important;border:3px solid #000!important;animation:1.3s infinite neoPulseGreen!important}.hud-idle-border{border:2px solid #000;transition:all .2s}@keyframes sessionActivePulse{0%,to{box-shadow:4px 4px #000}50%{box-shadow:4px 4px #000,0 0 0 4px #ff5c5c}}.session-active{animation:1.4s infinite sessionActivePulse}@keyframes dotPulse{0%,80%,to{opacity:.5;transform:scale(.65)}40%{opacity:1;transform:scale(1.15)}}.dot-pulse span{background-color:#000;border-radius:50%;width:6px;height:6px;margin:0 2px;animation:1.3s ease-in-out infinite dotPulse;display:inline-block}.dot-pulse span:nth-child(2){animation-delay:.2s}.dot-pulse span:nth-child(3){animation-delay:.4s}@keyframes entryFadeIn{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.transcript-entry{animation:.2s ease-out forwards entryFadeIn}.nudge-appear{animation:.25s ease-out forwards entryFadeIn}.neo-grid-bg{background-image:linear-gradient(#0000000a 1px,#0000 1px),linear-gradient(90deg,#0000000a 1px,#0000 1px);background-size:28px 28px}#mic-equalizer i{background:#737373;border:1px solid #000;width:3.5px;height:4px;transition:height .1s,background .1s}#mic-equalizer.mic-meter-active i{background:#22c55e;animation:.55s ease-in-out infinite alternate meterBounce}#mic-equalizer.mic-meter-active i:nth-child(2){animation-delay:.11s}#mic-equalizer.mic-meter-active i:nth-child(3){animation-delay:.22s}#mic-equalizer.mic-meter-active i:nth-child(4){animation-delay:.33s}@keyframes meterBounce{0%{height:4px}to{height:16px}}.scenario-card-active{transform:translate(-2px,-2px);background-color:#fefce8!important;border-color:#000!important;box-shadow:6px 6px #000!important}body.session-live header,body.session-live footer,body.session-live #control-board,body.session-live #scenario-panel,body.session-live #quick-test-panel,body.session-live #architecture-panel{display:none}body.session-live #main-container{max-width:1120px;padding:1rem}body.session-live #session-panels{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:1rem;display:grid}body.session-live #transcript-panel,body.session-live #hud-card{min-height:min(560px,100vh - 2rem)}body.session-live #hud-card{background:#fff;border:3px solid #000;width:100%;max-height:none;position:static;overflow-y:auto;box-shadow:8px 8px #000}body.session-live #hud-card .hud-heading,body.session-live #hud-card #hud-objective-wrap,body.session-live #hud-card .hud-footer>div:first-child,body.session-live #hud-card #hud-reset-btn{display:none}body.session-live #hud-card #hud-live-status,body.session-live #hud-card #hud-live-controls{display:flex}@media (width<=780px){body.session-live #main-container{padding:.75rem}body.session-live #session-panels{grid-template-columns:minmax(0,1fr);gap:.75rem}body.session-live #transcript-panel,body.session-live #hud-card{min-height:auto}}#hud-window-titlebar,.hud-draggable-header,.drag-region{-webkit-app-region:drag;-webkit-user-select:none;user-select:none}#hud-window-titlebar button,.hud-draggable-header button,button,input,select,textarea,a,.no-drag{-webkit-app-region:no-drag}</style>
+</head>
+<body class="min-h-screen bg-[#F4F4EE] text-[#0A0A0A] neo-grid-bg antialiased flex flex-col pt-9 selection:bg-[#FFE600] selection:text-black">
+
+  <!-- 1. FIXED TOP DRAGGABLE HUD TITLE BAR (ELECTRON COMPATIBLE) -->
+  <div id="hud-window-titlebar" class="fixed top-0 left-0 right-0 h-9 z-[100] flex items-center justify-between px-3 bg-white border-b-2 border-black select-none shadow-[0_1px_0_#000]">
+    <div class="flex items-center gap-2 pointer-events-none">
+      <span class="w-3 h-3 rounded-full bg-[#22C55E] border border-black animate-pulse"></span>
+      <span class="text-xs font-black tracking-wider uppercase font-mono-app text-black">GHOST HUD &middot; v2.5 NEO</span>
+      <span class="text-[10px] font-black uppercase px-1.5 py-0.2 bg-[#FFE600] border border-black">LIVE</span>
+    </div>
+    <div class="flex items-center gap-1.5 no-drag">
+      <button type="button" id="titlebar-settings-btn" onclick="openSettingsModal()" aria-label="Open API settings" title="API Settings"
+        class="w-6 h-6 flex items-center justify-center border-1.5 border-black bg-[#E5E5DE] hover:bg-[#22C55E] active:translate-y-0.5 text-xs font-black transition-colors cursor-pointer">
+        <span>⚙</span>
+      </button>
+      <button type="button" id="titlebar-minimize-btn" onclick="minimizeHUD()" aria-label="Minimize HUD" title="Minimize Window"
+        class="w-6 h-6 flex items-center justify-center border-1.5 border-black bg-[#E5E5DE] hover:bg-[#FFE600] active:translate-y-0.5 text-xs font-black transition-colors cursor-pointer">
+        <span>&minus;</span>
+      </button>
+      <button type="button" id="titlebar-close-btn" onclick="closeHUD()" aria-label="Close HUD" title="Close Window"
+        class="w-6 h-6 flex items-center justify-center border-1.5 border-black bg-[#E5E5DE] hover:bg-[#FF5C5C] active:translate-y-0.5 text-xs font-black transition-colors cursor-pointer">
+        <span>&times;</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. MAIN HEADER: BOLD NEO-BRUTALIST TITLE BAR -->
+  <header class="sticky top-9 z-50 border-b-2 border-black bg-white px-6 py-4 shadow-[0_3px_0_#000000]">
+    <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+      
+      <!-- Brand Wordmark -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#FFE600] border-2 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center font-black text-xl text-black">
+          👻
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-black tracking-tight uppercase text-black leading-none">Ghost</h1>
+            <span class="text-[10px] font-black tracking-widest uppercase bg-[#22C55E] text-black px-2 py-0.5 border-1.5 border-black shadow-[1.5px_1.5px_0px_#000]">
+              COPILOT HUD
+            </span>
+          </div>
+          <p class="text-xs font-bold text-neutral-600 mt-0.5">Real-time Conversational Decision-Support Assistant</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions & Indicators -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <span id="live-clock" class="hidden sm:inline-block px-3 py-1 bg-[#F4F4EE] border-2 border-black font-mono-app text-xs font-black text-black shadow-[2px_2px_0px_#000]">
+          --:--:--
+        </span>
+        
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black text-xs font-black uppercase shadow-[2px_2px_0px_#000]">
+          <span id="header-status-dot" class="w-2.5 h-2.5 rounded-full bg-neutral-400 border border-black"></span>
+          <span id="header-status-text" class="tracking-wider">IDLE</span>
+        </div>
+
+        <div class="flex items-center gap-1.5 pl-1 border-l-2 border-black no-drag">
+          <button type="button" onclick="openSettingsModal()" aria-label="Open API settings" title="API Settings"
+            class="w-8 h-8 flex items-center justify-center border-2 border-black bg-white hover:bg-[#22C55E] font-black text-sm shadow-[2px_2px_0px_#000] active:translate-y-0.5 transition-all cursor-pointer">
+            ⚙
+          </button>
+          <button type="button" onclick="minimizeHUD()" aria-label="Minimize Window" title="Minimize Window"
+            class="w-8 h-8 flex items-center justify-center border-2 border-black bg-white hover:bg-[#FFE600] font-black text-sm shadow-[2px_2px_0px_#000] active:translate-y-0.5 transition-all cursor-pointer">
+            &minus;
+          </button>
+          <button type="button" onclick="closeHUD()" aria-label="Close Window" title="Close Window"
+            class="w-8 h-8 flex items-center justify-center border-2 border-black bg-white hover:bg-[#FF5C5C] font-black text-sm shadow-[2px_2px_0px_#000] active:translate-y-0.5 transition-all cursor-pointer">
+            &times;
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 3. MAIN DASHBOARD CONTENT -->
+  <main id="main-container" class="flex-1 max-w-7xl w-full mx-auto px-6 py-6 flex flex-col gap-6">
+
+    <!-- COMPONENT 1: MISSION CONTROL BOARD -->
+    <section id="control-board" aria-label="Mission Control Board" class="nb-box p-6 rounded-xl">
+      <!-- Inputs Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        
+        <!-- Meeting Objective Input -->
+        <div class="flex flex-col gap-2">
+          <label for="objective-input" class="text-xs font-black uppercase tracking-wider flex items-center gap-2 text-black">
+            <span class="w-2.5 h-2.5 bg-black inline-block"></span>
+            Strategic Meeting Objective
+          </label>
+          <input id="objective-input" type="text"
+            value="Close the software deal at premium pricing without offering discounts."
+            class="w-full bg-white border-2 border-black rounded-lg px-4 py-3 text-sm font-bold text-black placeholder-neutral-400 focus:outline-none focus:bg-[#FEFCE8] shadow-[3px_3px_0px_#000] transition-all" />
+          <p class="text-[11px] font-bold text-neutral-600">Strategic target guiding real-time objection &amp; leverage detection.</p>
+        </div>
+
+        <!-- Secure Server & Provider API Status Card -->
+        <div class="flex flex-col justify-between p-4 bg-[#F8F8F4] border-2 border-black rounded-lg shadow-[3px_3px_0px_#000]">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-black flex items-center gap-2">
+              <span class="w-2.5 h-2.5 bg-[#22C55E] border border-black inline-block"></span>
+              Secure API Configuration
+            </span>
+            <span class="text-[10px] font-mono-app font-black uppercase px-2 py-0.5 bg-[#FFE600] border border-black">
+              RAM PROTECTED
+            </span>
+          </div>
+          <div class="flex items-center gap-2.5 my-2">
+            <span id="secure-api-status-dot" class="w-3 h-3 rounded-full bg-[#22C55E] border-1.5 border-black"></span>
+            <span id="secure-api-status" class="text-sm font-black text-black">API Connected (Local Gateway)</span>
+          </div>
+          <p id="secure-api-status-detail" class="text-[11px] font-bold text-neutral-600">
+            Provider keys remain server-side in memory and are never exposed to browser context.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Session Activation & Speech Simulator Bar -->
+      <div class="flex flex-col items-center gap-4 pt-2">
+        <div class="flex items-center gap-3.5 w-full max-w-lg justify-center flex-wrap">
+          
+          <!-- Primary Session Toggle Button -->
+          <button id="session-toggle-btn" type="button" onclick="toggleSession()" aria-label="Start live session" aria-pressed="false"
+            class="nb-btn flex-1 min-w-[220px] h-14 rounded-xl text-sm sm:text-base tracking-wider uppercase bg-[#FFE600] hover:bg-[#FFD166] text-black">
+            <span id="btn-idle-content" class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+              </svg>
+              Activate Live Session
+            </span>
+            <span id="btn-active-content" class="hidden flex items-center justify-center gap-2 text-white bg-[#FF5C5C] h-full w-full rounded-lg">
+              <span class="dot-pulse flex items-center gap-0.5"><span></span><span></span><span></span></span>
+              Live Tracking &mdash; Stop
+            </span>
+          </button>
+
+          <!-- New Session Button -->
+          <button type="button" onclick="startFreshNewSession()" aria-label="Start fresh new session"
+            class="nb-btn h-14 px-5 rounded-xl text-xs tracking-wider uppercase bg-white hover:bg-[#F4F4EE] text-black flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            New Session
+          </button>
+
+        </div>
+
+        <!-- Instant Speech / Text Simulator Input -->
+        <div class="w-full max-w-2xl flex items-center gap-2 bg-white p-2 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000]">
+          <span class="text-xs font-mono-app font-black text-black pl-2 hidden sm:inline-block uppercase">Live Simulator:</span>
+          <input id="live-speech-simulator-input" type="text"
+            placeholder="Type a negotiation statement (e.g. 'Your competitor offers a lower price')..."
+            onkeydown="if(event.key==='Enter') simulateLiveSpeechInput()"
+            class="flex-1 bg-transparent px-3 py-1.5 text-xs font-bold text-black placeholder-neutral-400 focus:outline-none font-mono-app" />
+          <button type="button" onclick="simulateLiveSpeechInput()"
+            class="nb-btn px-4 py-2 rounded-lg bg-[#000000] text-white hover:bg-[#222222] text-xs font-mono-app flex items-center gap-1.5">
+            <span>Send</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+
+        <!-- Telemetry & Hardware Badges -->
+        <div class="flex items-center gap-2.5 text-xs font-mono-app font-bold text-neutral-700 flex-wrap justify-center pt-1">
+          <span class="nb-badge bg-white px-2.5 py-1 flex items-center gap-1.5">
+            MIC: <span id="mic-status-label" class="text-black">Standby</span>
+            <span id="mic-equalizer" class="inline-flex h-4 items-center gap-0.5"><i></i><i></i><i></i><i></i></span>
+          </span>
+          <span class="nb-badge bg-white px-2.5 py-1 text-black" id="active-model-display">
+            AI: Gemini 1.5 Flash
+          </span>
+          <span class="nb-badge bg-[#A7F3D0] px-2.5 py-1 text-black">
+            SHIELD: RAM PII Filter Active
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COMPONENT 2: SPLIT DASHBOARD LAYOUT (LEFT: TRANSCRIPT STREAM / RIGHT: STRATEGIC HUD) -->
+    <div id="session-panels" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+
+      <!-- LEFT COLUMN: TRANSCRIPT STREAM CARD -->
+      <section id="transcript-panel" aria-label="Conversation Transcript" class="nb-box rounded-xl flex flex-col overflow-hidden min-h-[460px]">
+        
+        <!-- Card Header -->
+        <div class="flex items-center justify-between px-5 py-3.5 border-b-2 border-black bg-[#F8F8F4] flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <span class="w-3.5 h-3.5 rounded-full bg-[#FF5C5C] border border-black"></span>
+            <span class="w-3.5 h-3.5 rounded-full bg-[#FFE600] border border-black"></span>
+            <span class="w-3.5 h-3.5 rounded-full bg-[#22C55E] border border-black"></span>
+            <span class="ml-2 text-xs font-black tracking-wider uppercase text-black">Transcript Stream</span>
+          </div>
+          <button type="button" onclick="clearTranscript()" aria-label="Clear transcript log"
+            class="nb-btn text-xs font-mono-app px-3 py-1 rounded bg-white hover:bg-[#F4F4EE] text-black">
+            Clear
+          </button>
+        </div>
+        
+        <!-- Local RAM Shield Banner -->
+        <div class="flex-shrink-0 mx-4 mt-4 mb-2 flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-[#E6F4EA] border-2 border-black shadow-[2px_2px_0px_#000]">
+          <span class="text-xs">🟢</span>
+          <span class="text-xs font-black font-mono-app text-black uppercase tracking-wide">
+            Local RAM Compliance Shield Active &middot; PII Scrubbed
+          </span>
+        </div>
+
+        <!-- Transcript Scroll Area -->
+        <div id="transcript-scroll-area" role="log" aria-live="polite" aria-relevant="additions"
+          class="flex-1 overflow-y-auto px-5 py-4 space-y-2.5 font-mono-app text-xs min-h-[280px] max-h-[380px] bg-white">
+          <div id="transcript-empty-state" class="flex flex-col items-center justify-center h-full text-center py-12">
+            <div class="w-12 h-12 rounded-lg bg-[#F4F4EE] border-2 border-black flex items-center justify-center text-xl mb-3 shadow-[2px_2px_0px_#000]">
+              🎙️
+            </div>
+            <p class="text-black font-black uppercase text-xs tracking-wider">Awaiting speech or scenario input</p>
+            <p class="text-neutral-500 font-bold text-[11px] mt-1 max-w-xs">
+              Activate the session above or click any Real-World Scenario below to test instant AI classification.
+            </p>
+          </div>
+        </div>
+
+        <!-- Transcript Footer -->
+        <div class="px-5 py-3 border-t-2 border-black bg-[#F8F8F4] flex items-center justify-between text-xs font-mono-app font-bold text-neutral-700 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span id="console-listen-dot" class="w-2.5 h-2.5 rounded-full bg-neutral-400 border border-black"></span>
+            <span id="console-listen-label" class="text-black">Microphone standby</span>
+          </div>
+          <span id="transcript-count" class="nb-badge bg-white px-2 py-0.5 text-black">0 entries</span>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COLUMN: STRATEGIC COPILOT HUD -->
+      <section aria-label="Strategic Copilot HUD" id="hud-card" role="region" aria-live="polite"
+        class="nb-box rounded-xl flex flex-col justify-between p-6 hud-idle-border min-h-[460px]">
+        
+        <!-- HUD Header -->
+        <div>
+          <!-- Draggable Mini Header Bar -->
+          <div class="hud-draggable-header flex items-center justify-between pb-2.5 mb-3.5 border-b-2 border-black cursor-grab active:cursor-grabbing select-none">
+            <div class="flex items-center gap-2 pointer-events-none">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#22C55E] border border-black animate-pulse"></span>
+              <span class="text-[11px] font-black font-mono-app uppercase tracking-wider text-black">Ghost HUD</span>
+              <span class="text-[9px] font-mono-app font-black px-1.5 py-0.2 bg-[#FFE600] border border-black text-black">FLOAT</span>
+            </div>
+            <div class="flex items-center gap-1.5 no-drag">
+              <button type="button" id="hud-btn-minimize" onclick="minimizeHUD()" aria-label="Minimize HUD" title="Minimize Window"
+                class="w-6 h-6 flex items-center justify-center border-1.5 border-black bg-white hover:bg-[#FFE600] text-xs font-black transition-colors cursor-pointer">
+                &minus;
+              </button>
+              <button type="button" id="hud-btn-close" onclick="closeHUD()" aria-label="Close HUD" title="Close Window"
+                class="w-6 h-6 flex items-center justify-center border-1.5 border-black bg-white hover:bg-[#FF5C5C] text-xs font-black transition-colors cursor-pointer">
+                &times;
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-3">
+            <div class="hud-heading flex items-center gap-2">
+              <span class="w-3.5 h-3.5 bg-black inline-block"></span>
+              <span class="text-xs font-black text-black tracking-wider uppercase">Strategic Copilot HUD</span>
+            </div>
+            <div id="hud-badge-container" class="hidden"></div>
+          </div>
+
+          <!-- Live Status Bar for Active Floating Session -->
+          <div id="hud-live-status" class="hidden items-center justify-between text-xs font-mono-app font-black uppercase text-black pb-2 mb-2 border-b-2 border-black">
+            <span class="flex items-center gap-2">
+              <i id="hud-live-dot" class="w-2.5 h-2.5 rounded-full bg-[#22C55E] border border-black animate-pulse"></i>
+              <span id="hud-live-state">Listening</span>
+            </span>
+            <span id="hud-live-elapsed" class="nb-badge bg-white px-2 py-0.5">00:00</span>
+          </div>
+
+          <!-- Target Objective Tracker Box -->
+          <div id="hud-objective-wrap" class="flex items-center gap-2 bg-[#F8F8F4] px-3.5 py-2.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
+            <span class="text-[10px] uppercase font-mono-app text-black font-black tracking-wider bg-[#FFE600] px-1.5 py-0.5 border border-black flex-shrink-0">
+              TARGET
+            </span>
+            <span id="hud-objective-display" class="text-xs font-bold text-neutral-900 truncate">
+              Close the software deal at premium pricing without offering discounts.
+            </span>
+          </div>
+        </div>
+
+        <!-- HUD Center Display -->
+        <div class="hud-center flex flex-col items-center justify-center text-center my-auto py-5">
+          
+          <p id="hud-status-label" class="text-xs font-black text-neutral-500 uppercase tracking-widest mb-2 transition-all duration-200">
+            Awaiting Tactical Signal
+          </p>
+
+          <div id="hud-nudge-text" class="text-3xl sm:text-4xl font-black text-neutral-400 tracking-tight leading-snug transition-all duration-200 uppercase">
+            &mdash; &mdash;
+          </div>
+
+          <p id="hud-advisor-thinking" class="hidden mt-2 text-xs font-mono-app font-bold text-amber-700 bg-[#FEF3C7] px-3 py-1 rounded-full border border-black shadow-[1.5px_1.5px_0px_#000]" aria-live="polite">
+            <span class="dot-pulse mr-1"><span></span><span></span><span></span></span> Advisor thinking...
+          </p>
+
+          <p id="hud-sub-text" class="mt-2 text-xs text-neutral-500 font-bold font-mono-app max-w-md">
+            AI copilot will surface real-time actionable cues in your peripheral vision.
+          </p>
+
+          <!-- DISTINCT SECTIONS: ADVISOR GUIDANCE HUD BOX -->
+          <div id="hud-explanation-box" class="hidden mt-4 max-w-md w-full rounded-xl border-2 border-black bg-white text-left shadow-[3px_3px_0px_#000] overflow-hidden">
+            
+            <div class="px-4 py-2 bg-[#F4F4EE] border-b-2 border-black flex items-center justify-between">
+              <span class="text-[11px] font-black uppercase tracking-wider text-black flex items-center gap-1.5">
+                <span>⚡</span> Advisor Guidance
+              </span>
+              <span class="text-[9px] font-mono-app font-black uppercase px-2 py-0.2 bg-black text-white">TACTICAL</span>
+            </div>
+
+            <div class="p-4 space-y-3 font-mono-app text-xs">
+              
+              <!-- 1. Suggested Response -->
+              <div class="p-3 bg-[#FEFCE8] border-1.5 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+                <span class="block text-[10px] font-black uppercase tracking-wider text-neutral-800 mb-1">
+                  🗣️ Suggested Response
+                </span>
+                <span id="hud-guidance-action" class="font-bold text-black leading-relaxed block"></span>
+              </div>
+
+              <!-- 2. Next Steps -->
+              <div class="p-3 bg-[#EFF6FF] border-1.5 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+                <span class="block text-[10px] font-black uppercase tracking-wider text-neutral-800 mb-1">
+                  🎯 Next Steps
+                </span>
+                <span id="hud-guidance-next" class="font-bold text-black leading-relaxed block"></span>
+              </div>
+
+              <!-- 3. Tactical Rationale -->
+              <div class="p-3 bg-[#F4F4EE] border-1.5 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+                <span class="block text-[10px] font-black uppercase tracking-wider text-neutral-800 mb-1">
+                  🧠 Tactical Rationale
+                </span>
+                <span id="hud-explanation-text" class="font-bold text-neutral-800 leading-relaxed block"></span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- HUD Footer -->
+        <div class="hud-footer flex items-center justify-between pt-3.5 border-t-2 border-black flex-wrap gap-2">
+          <div class="flex items-center gap-2 text-xs font-mono-app font-bold text-neutral-700">
+            <span id="hud-api-dot" class="w-2.5 h-2.5 rounded-full bg-neutral-400 border border-black"></span>
+            <span id="hud-api-label" class="text-black">MODE: Standby</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span id="hud-last-update" class="text-xs font-mono-app font-bold text-neutral-500">&mdash;</span>
+            <button id="hud-reset-btn" type="button" onclick="resetDemoToStandby()" aria-label="Reset HUD to standby"
+              class="nb-btn text-xs font-mono-app px-3 py-1 rounded bg-white hover:bg-[#F4F4EE] text-black">
+              Reset HUD
+            </button>
+          </div>
+
+          <!-- Floating live session controls -->
+          <div class="hidden items-center gap-2" id="hud-live-controls">
+            <button type="button" onclick="endSessionWithSummary(false)" aria-label="Stop session"
+              class="nb-btn px-3 py-1.5 rounded-lg bg-[#FF5C5C] text-black text-xs font-black">
+              Stop
+            </button>
+            <button type="button" onclick="startFreshNewSession()" aria-label="New session"
+              class="nb-btn px-3 py-1.5 rounded-lg bg-white text-black text-xs font-black">
+              New
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- COMPONENT 3: INTERACTIVE REAL-WORLD DEMO SCENARIOS -->
+    <section id="scenario-panel" aria-label="Real-World Scenarios" class="nb-box p-6 rounded-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-5 border-b-2 border-black">
+        <div class="flex items-center gap-2.5">
+          <span class="w-4 h-4 bg-[#22C55E] border-2 border-black inline-block"></span>
+          <h2 class="text-sm font-black uppercase tracking-wider text-black">Interactive Real-World Scenarios</h2>
+          <span class="nb-badge bg-[#A7F3D0] px-2.5 py-0.5 text-[10px] font-mono-app text-black">
+            Zero API Key Needed &middot; Offline Ready
+          </span>
+        </div>
+        <button type="button" onclick="resetDemoToStandby()"
+          class="nb-btn self-start sm:self-auto text-xs font-mono-app px-3.5 py-1.5 rounded-lg bg-white hover:bg-[#F4F4EE] text-black">
+          ↺ Reset Scenarios
+        </button>
+      </div>
+
+      <p class="text-xs font-bold text-neutral-600 mb-5">
+        Click any scenario below to simulate live conversational input and inspect instant neo-brutalist peripheral cues:
+      </p>
+
+      <!-- 5 Interactive Scenario Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- Scenario 1: Sales Negotiation -->
+        <div id="scenario-card-1" onclick="selectAndRunScenario(1)" role="button" tabindex="0"
+          class="nb-box-sm p-5 rounded-xl hover:bg-[#FEFCE8] transition-all flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="nb-badge bg-[#E0E7FF] text-black px-2.5 py-1 rounded text-xs font-mono-app">
+                01. Sales Negotiation
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Objective:</span>
+              <p class="text-xs font-bold text-black mt-0.5">Close a ₹5 lakh software deal without offering discounts.</p>
+            </div>
+            <div class="bg-[#F8F8F4] p-3 rounded-lg border-1.5 border-black mb-3">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Client Statement:</span>
+              <p class="text-xs font-bold text-black italic mt-0.5">"Your competitor offers the same features for a lower price."</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-xs font-black text-black">Analyze Objection &rarr;</span>
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[10px] px-2 py-0.5">OBJECTION</span>
+          </div>
+        </div>
+
+        <!-- Scenario 2: Job Interview -->
+        <div id="scenario-card-2" onclick="selectAndRunScenario(2)" role="button" tabindex="0"
+          class="nb-box-sm p-5 rounded-xl hover:bg-[#FEFCE8] transition-all flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="nb-badge bg-[#F3E8FF] text-black px-2.5 py-1 rounded text-xs font-mono-app">
+                02. Job Interview
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Objective:</span>
+              <p class="text-xs font-bold text-black mt-0.5">Demonstrate technical skills and secure the position.</p>
+            </div>
+            <div class="bg-[#F8F8F4] p-3 rounded-lg border-1.5 border-black mb-3">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Interviewer Statement:</span>
+              <p class="text-xs font-bold text-black italic mt-0.5">"You don't have much industry experience."</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-xs font-black text-black">Analyze Experience &rarr;</span>
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[10px] px-2 py-0.5">OBJECTION</span>
+          </div>
+        </div>
+
+        <!-- Scenario 3: Customer Support -->
+        <div id="scenario-card-3" onclick="selectAndRunScenario(3)" role="button" tabindex="0"
+          class="nb-box-sm p-5 rounded-xl hover:bg-[#FEFCE8] transition-all flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="nb-badge bg-[#FEF3C7] text-black px-2.5 py-1 rounded text-xs font-mono-app">
+                03. Customer Support
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Objective:</span>
+              <p class="text-xs font-bold text-black mt-0.5">Resolve the customer's problem and maintain satisfaction.</p>
+            </div>
+            <div class="bg-[#F8F8F4] p-3 rounded-lg border-1.5 border-black mb-3">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Customer Statement:</span>
+              <p class="text-xs font-bold text-black italic mt-0.5">"I've contacted support three times, and nobody has solved my problem."</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-xs font-black text-black">Analyze Escalation &rarr;</span>
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[10px] px-2 py-0.5">OBJECTION</span>
+          </div>
+        </div>
+
+        <!-- Scenario 4: Team Meeting -->
+        <div id="scenario-card-4" onclick="selectAndRunScenario(4)" role="button" tabindex="0"
+          class="nb-box-sm p-5 rounded-xl hover:bg-[#FEFCE8] transition-all flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="nb-badge bg-[#CCFBF1] text-black px-2.5 py-1 rounded text-xs font-mono-app">
+                04. Team Meeting
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Objective:</span>
+              <p class="text-xs font-bold text-black mt-0.5">Finalize the project plan and assign responsibilities.</p>
+            </div>
+            <div class="bg-[#F8F8F4] p-3 rounded-lg border-1.5 border-black mb-3">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Team Member Statement:</span>
+              <p class="text-xs font-bold text-black italic mt-0.5">"We probably can't finish this by Friday."</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-xs font-black text-black">Analyze Deadline &rarr;</span>
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[10px] px-2 py-0.5">OBJECTION</span>
+          </div>
+        </div>
+
+        <!-- Scenario 5: Business Partnership -->
+        <div id="scenario-card-5" onclick="selectAndRunScenario(5)" role="button" tabindex="0"
+          class="nb-box-sm p-5 rounded-xl hover:bg-[#FEFCE8] transition-all flex flex-col justify-between cursor-pointer md:col-span-2 lg:col-span-1">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="nb-badge bg-[#D1FAE5] text-black px-2.5 py-1 rounded text-xs font-mono-app">
+                05. Business Partnership
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Objective:</span>
+              <p class="text-xs font-bold text-black mt-0.5">Secure a partnership with clearly defined responsibilities.</p>
+            </div>
+            <div class="bg-[#F8F8F4] p-3 rounded-lg border-1.5 border-black mb-3">
+              <span class="text-[10px] font-black uppercase tracking-wider text-neutral-600">Partner Statement:</span>
+              <p class="text-xs font-bold text-black italic mt-0.5">"We can provide the technical team if you handle implementation."</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-xs font-black text-black">Analyze Leverage &rarr;</span>
+            <span class="nb-badge bg-[#22C55E] text-black text-[10px] px-2 py-0.5">LEVERAGE</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COMPONENT 4: QUICK TEST CASES (12 HIGH-VALUE CORPORATE CASES) -->
+    <section id="quick-test-panel" aria-label="Quick Test Cases" class="nb-box p-6 rounded-xl">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b-2 border-black flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <span class="w-4 h-4 bg-[#FFE600] border-2 border-black inline-block"></span>
+          <h2 class="text-sm font-black uppercase tracking-wider text-black">Quick Test Cases</h2>
+        </div>
+        <span class="text-xs font-mono-app font-bold text-neutral-600">Click any card to fire test turn</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+
+        <!-- 1. Budget Objection -->
+        <div onclick="runQuickTest('Budget Objection', 'Close enterprise deal without discounts.', 'We simply don\'t have the remaining budget allocated for this quarter.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">BUDGET OBJECTION</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"We simply don't have the remaining budget allocated for this quarter."</p>
+        </div>
+
+        <!-- 2. Competitor Comparison -->
+        <div onclick="runQuickTest('Competitor Comparison', 'Position solution at premium tier.', 'Vendor B has the exact same feature suite at half your subscription price.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">COMPETITOR CLAIM</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"Vendor B has the exact same feature suite at half your subscription price."</p>
+        </div>
+
+        <!-- 3. Requests for Discounts -->
+        <div onclick="runQuickTest('Discount Request', 'Protect price integrity.', 'Can you give us a 25% discount if we agree to sign before end of month?')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">DISCOUNT REQUEST</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"Can you give us a 25% discount if we agree to sign before end of month?"</p>
+        </div>
+
+        <!-- 4. Buying Signal -->
+        <div onclick="runQuickTest('Buying Signal', 'Secure annual contract.', 'This integration will save our engineering team at least 15 hours every week.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#F0FDF4] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#22C55E] text-black text-[9px] px-2 py-0.2">BUYING SIGNAL</span>
+            <span class="text-xs">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"This integration will save our engineering team at least 15 hours every week."</p>
+        </div>
+
+        <!-- 5. Decision-Maker Identification -->
+        <div onclick="runQuickTest('Decision-Maker', 'Reach final executive sign-off.', 'I will need to bring our VP of Finance and CTO into the next demo call.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#F0FDF4] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#22C55E] text-black text-[9px] px-2 py-0.2">EXECUTIVE SPONSOR</span>
+            <span class="text-xs">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"I will need to bring our VP of Finance and CTO into the next demo call."</p>
+        </div>
+
+        <!-- 6. Contract Approval -->
+        <div onclick="runQuickTest('Contract Approval', 'Finalize executed agreement.', 'The legal department approved the SLA terms, so we are ready to proceed.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#F0FDF4] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#22C55E] text-black text-[9px] px-2 py-0.2">LEGAL APPROVAL</span>
+            <span class="text-xs">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"The legal department approved the SLA terms, so we are ready to proceed."</p>
+        </div>
+
+        <!-- 7. Timeline Delay -->
+        <div onclick="runQuickTest('Timeline Delay', 'Maintain Q1 rollout schedule.', 'We need to push this project kickoff to next quarter due to company restructuring.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">TIMELINE DELAY</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"We need to push this project kickoff to next quarter due to restructuring."</p>
+        </div>
+
+        <!-- 8. Missing Requirements -->
+        <div onclick="runQuickTest('Missing Requirements', 'Align on enterprise scope.', 'We also require on-premise air-gapped deployment which isn\'t in your spec.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">MISSING SPECS</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"We also require on-premise air-gapped deployment which isn't in your spec."</p>
+        </div>
+
+        <!-- 9. Customer Frustration -->
+        <div onclick="runQuickTest('Customer Frustration', 'Restore account confidence and retain SLA.', 'This is the second service disruption this week and our customers are complaining.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">ACCOUNT FRICTION</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"This is the second service disruption this week and our customers are complaining."</p>
+        </div>
+
+        <!-- 10. Team Commitments -->
+        <div onclick="runQuickTest('Team Commitments', 'Finalize sprint deliverable accountability.', 'I will personally take ownership of the API gateway refactor by Wednesday.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#F0FDF4] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#22C55E] text-black text-[9px] px-2 py-0.2">COMMITMENT</span>
+            <span class="text-xs">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"I will personally take ownership of the API gateway refactor by Wednesday."</p>
+        </div>
+
+        <!-- 11. Unclear Responsibilities -->
+        <div onclick="runQuickTest('Unclear Roles', 'Establish clear task ownership.', 'Nobody was assigned to write the migration test suite, so it was delayed.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#FFF2F2] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#FF5C5C] text-black text-[9px] px-2 py-0.2">UNCLEAR ROLES</span>
+            <span class="text-xs">🚨</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"Nobody was assigned to write the migration test suite, so it was delayed."</p>
+        </div>
+
+        <!-- 12. Agreement on Next Steps -->
+        <div onclick="runQuickTest('Next Steps', 'Lock next milestone calendar.', 'Let\'s schedule the kickoff sync for Monday at 10 AM to finalize the architecture.')"
+          class="nb-box-sm p-3.5 rounded-lg hover:bg-[#F0FDF4] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="nb-badge bg-[#22C55E] text-black text-[9px] px-2 py-0.2">NEXT STEPS LOCKED</span>
+            <span class="text-xs">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-black italic">"Let's schedule the kickoff sync for Monday at 10 AM to finalize the architecture."</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COMPONENT 5: ARCHITECTURE & PRIVACY SHIELD SPECIFICATION -->
+    <section id="architecture-panel" aria-label="Architecture Spec" class="nb-box p-6 rounded-xl text-xs font-mono-app">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-4 bg-[#F8F8F4] border-2 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+          <div class="flex items-center gap-2 mb-2 font-black text-black uppercase">
+            <span class="w-3 h-3 bg-[#22C55E] border border-black inline-block"></span>
+            Deepgram &middot; Web Audio
+          </div>
+          <p class="text-neutral-700 font-bold leading-relaxed">
+            Streaming microphone audio securely over WebSocket with sub-second sentence buffering. Local Web Speech API acts as automatic fallback.
+          </p>
+        </div>
+
+        <div class="p-4 bg-[#F8F8F4] border-2 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+          <div class="flex items-center gap-2 mb-2 font-black text-black uppercase">
+            <span class="w-3 h-3 bg-[#FFE600] border border-black inline-block"></span>
+            RAM Compliance Buffer
+          </div>
+          <p class="text-neutral-700 font-bold leading-relaxed">
+            Credit cards, corporate emails, and contact numbers are scrubbed in browser RAM prior to AI dispatch. Zero raw credentials persist.
+          </p>
+        </div>
+
+        <div class="p-4 bg-[#F8F8F4] border-2 border-black rounded-lg shadow-[2px_2px_0px_#000]">
+          <div class="flex items-center gap-2 mb-2 font-black text-black uppercase">
+            <span class="w-3 h-3 bg-[#FF5C5C] border border-black inline-block"></span>
+            Gemini Advisor Engine
+          </div>
+          <p class="text-neutral-700 font-bold leading-relaxed">
+            Evaluates conversational momentum against the target objective to deliver headline nudges, verbatim phrasing, next milestones, and rationale.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 4. FOOTER: BOLD NEO-BRUTALIST BASELINE -->
+  <footer class="border-t-2 border-black py-4 px-6 mt-6 bg-white shadow-[0_-2px_0_#000]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono-app font-black">
+      <div class="flex items-center gap-2 text-black">
+        <span>GHOST</span>
+        <span class="text-neutral-400">&middot;</span>
+        <span class="text-neutral-600">Conversational Decision-Support Copilot HUD</span>
+      </div>
+      <span id="footer-clock" class="nb-badge bg-[#F4F4EE] px-2.5 py-1 text-black">--:--:-- UTC</span>
+    </div>
+  </footer>
+
+  <!-- 5. TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[90] flex flex-col gap-2.5 pointer-events-none" aria-live="polite" role="status"></div>
+
+  <!-- 6. LOCAL API SETTINGS MODAL -->
+  <div id="settings-modal" class="hidden fixed inset-0 z-[120] items-center justify-center bg-black/60 p-4 backdrop-blur-xs" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <section class="nb-box-lg w-full max-w-lg rounded-2xl p-6 bg-white">
+      <div class="flex items-start justify-between gap-4 pb-3 border-b-2 border-black">
+        <div>
+          <span class="nb-badge bg-[#22C55E] text-black text-[10px] font-mono-app px-2 py-0.5">LOCAL SETTINGS</span>
+          <h2 id="settings-title" class="mt-2 text-2xl font-black uppercase tracking-tight text-black">Provider API Keys</h2>
+          <p class="mt-1 text-xs font-bold text-neutral-600">Stored only on this device. Leave a field blank to keep its existing key.</p>
+        </div>
+        <button type="button" onclick="closeSettingsModal()" aria-label="Close settings" class="nb-btn w-8 h-8 rounded-lg flex items-center justify-center bg-[#E5E5DE] hover:bg-[#FF5C5C] text-lg font-black text-black">&times;</button>
+      </div>
+      <form id="settings-form" class="mt-5 space-y-4" onsubmit="saveProviderSettings(event)">
+        <label class="block text-xs font-black uppercase tracking-wider text-black">Gemini API key
+          <input id="settings-gemini-key" type="password" autocomplete="off" placeholder="AIza…" class="mt-2 w-full rounded-lg border-2 border-black px-3 py-2.5 font-mono-app text-xs font-bold shadow-[2px_2px_0px_#000] focus:bg-[#FEFCE8]" />
+        </label>
+        <label class="block text-xs font-black uppercase tracking-wider text-black">Deepgram API key
+          <input id="settings-deepgram-key" type="password" autocomplete="off" placeholder="dg_…" class="mt-2 w-full rounded-lg border-2 border-black px-3 py-2.5 font-mono-app text-xs font-bold shadow-[2px_2px_0px_#000] focus:bg-[#FEFCE8]" />
+        </label>
+        <p id="settings-status" class="text-xs font-bold text-neutral-600">Checking local provider status…</p>
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" onclick="closeSettingsModal()" class="nb-btn rounded-lg bg-white px-4 py-2 text-sm text-black hover:bg-[#F4F4EE]">Cancel</button>
+          <button type="submit" class="nb-btn rounded-lg bg-[#22C55E] px-4 py-2 text-sm text-black hover:bg-[#16A34A]">Save locally</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- 7. SESSION SUMMARY MODAL (HIGH-CONTRAST NEO-BRUTALIST BRIEF) -->
+  <div id="session-summary-modal" class="hidden fixed inset-0 z-[110] items-center justify-center bg-black/60 p-4 backdrop-blur-xs" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+    <section class="nb-box-lg w-full max-w-xl rounded-2xl p-6 bg-white">
+      <div class="flex items-start justify-between gap-4 pb-3 border-b-2 border-black">
+        <div>
+          <span class="nb-badge bg-[#22C55E] text-black text-[10px] font-mono-app px-2 py-0.5">SESSION COMPLETE</span>
+          <h2 id="summary-title" class="mt-2 text-2xl font-black uppercase tracking-tight text-black">Negotiation Debrief</h2>
+        </div>
+        <button type="button" onclick="closeSummaryModal()" aria-label="Close summary"
+          class="nb-btn w-8 h-8 rounded-lg flex items-center justify-center bg-[#E5E5DE] hover:bg-[#FF5C5C] text-lg font-black text-black">
+          &times;
+        </button>
+      </div>
+
+      <!-- Key Metrics Counters -->
+      <div class="grid grid-cols-3 gap-3.5 my-5 text-center">
+        <div class="p-3.5 bg-[#F8F8F4] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000]">
+          <span class="block text-[10px] font-black text-neutral-600 uppercase">Duration</span>
+          <strong id="summary-duration" class="mt-1 block font-mono-app text-xl font-black text-black">00:00</strong>
+        </div>
+        <div class="p-3.5 bg-[#F8F8F4] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000]">
+          <span class="block text-[10px] font-black text-neutral-600 uppercase">Statements</span>
+          <strong id="summary-statements" class="mt-1 block font-mono-app text-xl font-black text-black">0</strong>
+        </div>
+        <div class="p-3.5 bg-[#F8F8F4] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000]">
+          <span class="block text-[10px] font-black text-neutral-600 uppercase">Signals (Obj / Lev)</span>
+          <strong class="mt-1 block font-mono-app text-xl font-black">
+            <span id="summary-objections" class="text-[#DC2626]">0</span>
+            <span class="text-neutral-400"> / </span>
+            <span id="summary-leverage" class="text-[#16A34A]">0</span>
+          </strong>
+        </div>
+      </div>
+
+      <!-- Takeaways List -->
+      <div class="border-2 border-black rounded-xl p-4 bg-[#F8F8F4] shadow-[3px_3px_0px_#000]">
+        <p class="text-xs font-black uppercase tracking-wider text-black mb-2 flex items-center gap-1.5">
+          <span>📌</span> Strategic Takeaways &amp; Cues
+        </p>
+        <ul id="summary-takeaways" class="max-h-36 space-y-1.5 overflow-y-auto text-xs font-bold text-black font-mono-app"></ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-6 flex flex-wrap justify-end gap-3 pt-3 border-t-2 border-black">
+        <button type="button" onclick="closeSummaryModal()"
+          class="nb-btn px-4 py-2 rounded-lg bg-white hover:bg-[#F4F4EE] text-sm text-black">
+          Close
+        </button>
+        <button type="button" onclick="exportSessionReport()"
+          class="nb-btn px-4 py-2 rounded-lg bg-[#22C55E] hover:bg-[#16A34A] text-sm text-black">
+          Export Markdown Report
+        </button>
+        <button id="summary-new-session-btn" type="button" onclick="startSessionAfterSummary()"
+          class="hidden nb-btn px-4 py-2 rounded-lg bg-[#FFE600] hover:bg-[#FFD166] text-sm text-black">
+          Start New Session
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT ENGINE (ALL CORE WEBSOCKET, BUFFER, GEMINI LOGIC PRESERVED) -->
+  <script>
+"use strict";
+
+// =============================================
+// SECTION 0: ELECTRON IPC WINDOW CONTROLS
+// =============================================
+function minimizeHUD() {
+  if (window.ghostWindowControls) {
+    window.ghostWindowControls.minimize();
+  } else {
+    console.log("[HUD] minimize-hud action triggered (Electron IPC required)");
+  }
+}
+
+function closeHUD() {
+  if (window.ghostWindowControls) {
+    window.ghostWindowControls.close();
+  } else {
+    console.log("[HUD] close-hud action triggered (Electron IPC required)");
+  }
+}
+
+function setSettingsStatus(status) {
+  var label = el("settings-status");
+  if (!label) return;
+  label.textContent = status.geminiConfigured && status.deepgramConfigured
+    ? "Fully connected: Gemini and Deepgram are configured locally."
+    : (status.geminiConfigured ? "Gemini connected · Deepgram key missing." : status.deepgramConfigured ? "Deepgram connected · Gemini key missing." : "Offline simulation mode: no provider keys configured.");
+}
+
+async function openSettingsModal() {
+  var modal = el("settings-modal");
+  if (!modal) return;
+  modal.classList.remove("hidden"); modal.classList.add("flex");
+  try {
+    var response = await fetch("/api/status", { cache: "no-store" });
+    if (response.ok) setSettingsStatus(await response.json());
+  } catch (error) {
+    var label = el("settings-status");
+    if (label) label.textContent = "Local server unavailable. Offline simulation remains active.";
+  }
+}
+
+function closeSettingsModal() {
+  var modal = el("settings-modal");
+  if (modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); }
+}
+
+async function saveProviderSettings(event) {
+  event.preventDefault();
+  var geminiInput = el("settings-gemini-key");
+  var deepgramInput = el("settings-deepgram-key");
+  var status = el("settings-status");
+  if (status) status.textContent = "Saving keys locally…";
+  try {
+    var response = await fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        geminiApiKey: geminiInput ? geminiInput.value : "",
+        deepgramApiKey: deepgramInput ? deepgramInput.value : ""
+      })
+    });
+    if (!response.ok) throw new Error("Could not save settings");
+    var providerStatus = await response.json();
+    if (geminiInput) geminiInput.value = "";
+    if (deepgramInput) deepgramInput.value = "";
+    setSettingsStatus(providerStatus);
+    await loadSecureEnvStatus();
+    showToast("Local provider settings saved.", "success");
+  } catch (error) {
+    if (status) status.textContent = "Could not save settings. Offline simulation remains available.";
+    showToast("Settings were not saved; using offline guidance.", "warning");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".btn-minimize-hud, #hud-btn-minimize, #titlebar-minimize-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      minimizeHUD();
+    });
+  });
+  document.querySelectorAll(".btn-close-hud, #hud-btn-close, #titlebar-close-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeHUD();
+    });
+  });
+});
+
+// =============================================
+// SECTION 1: GLOBAL APP STATE
+// =============================================
+const AppState = {
+  isListening: false,
+  captureMode: "idle",
+  objective: "Close the software deal at premium pricing without offering discounts.",
+  secureEnvStatus: null,
+  recognitionInstance: null,
+  deepgramSocket: null,
+  mediaStream: null,
+  mediaRecorder: null,
+  audioContext: null,
+  audioAnalyser: null,
+  meterFrame: 0,
+  sessionTimer: null,
+  sessionStartedAt: 0,
+  sessionEntries: [],
+  currentEntryIndex: -1,
+  pendingFreshSession: false,
+  transcriptHistory: [],
+  speechBuffer: "",
+  speechCommittedBuffer: "",
+  speechBufferSource: "LIVE",
+  speechBufferTimer: null,
+  speechDraftRow: null,
+  speechHadFinalFragment: false,
+  lastSpeechBlock: "",
+  lastSpeechBlockAt: 0,
+  lastSpeechFlushWasInterim: false,
+  selectedScenarioId: null,
+  lastRequestId: 0
+};
+const SPEECH_SILENCE_THRESHOLD_MS = 2000;
+
+// 5 Predefined Offline Demonstration Scenarios (Deterministic)
+const DEMO_SCENARIOS = {
+  1: {
+    name: "Sales Negotiation",
+    objective: "Close a ₹5 lakh software deal without offering discounts.",
+    statement: "Your competitor offers the same features for a lower price.",
+    guidance: {
+      status: "OBJECTION",
+      headline: "Counter Competitor Claim",
+      suggestedResponse: "Say: “Let’s compare outcomes side by side — integration depth, SLA guarantees, and total cost of ownership over 24 months. Which result matters most to your team?”",
+      nextSteps: "Request the competitor’s proposal for a like-for-like comparison on scope, support tiers, and contractual guarantees before discussing price.",
+      tacticalRationale: "A competitor-based price objection threatens your margin. Anchoring the conversation on measurable outcomes shifts the evaluation from sticker price to business value."
+    }
+  },
+  2: {
+    name: "Job Interview",
+    objective: "Demonstrate technical skills and secure the position.",
+    statement: "You don't have much industry experience.",
+    guidance: {
+      status: "OBJECTION",
+      headline: "Reframe Experience Gap",
+      suggestedResponse: "Say: “That’s fair — my background is in adjacent domains where I solved similar problems. Let me walk you through a project where I delivered measurable impact using the same stack you’re hiring for.”",
+      nextSteps: "Present a concrete example that maps your transferable skills to the role’s core requirements and quantifies the outcome.",
+      tacticalRationale: "An experience-gap objection questions your fitness for the role. Reframing with a concrete, outcome-driven example shifts the evaluation from résumé checkboxes to demonstrated capability."
+    }
+  },
+  3: {
+    name: "Customer Support",
+    objective: "Resolve the customer's problem and maintain satisfaction.",
+    statement: "I've contacted support three times, and nobody has solved my problem.",
+    guidance: {
+      status: "OBJECTION",
+      headline: "Recover At-Risk Account",
+      suggestedResponse: "Say: “I’m sorry for the frustration — you shouldn’t have to explain this again. Let me take ownership right now: I’ll review all three tickets, consolidate the timeline, and give you a resolution plan within the hour.”",
+      nextSteps: "Pull the ticket history immediately, identify the root failure, assign a single owner, and confirm a concrete resolution deadline with the customer.",
+      tacticalRationale: "Repeated unresolved contacts signal imminent churn and potential escalation. Taking decisive personal ownership reverses the frustration trajectory and protects the account."
+    }
+  },
+  4: {
+    name: "Team Meeting",
+    objective: "Finalize the project plan and assign responsibilities.",
+    statement: "We probably can't finish this by Friday.",
+    guidance: {
+      status: "OBJECTION",
+      headline: "Address Deadline Risk",
+      suggestedResponse: "Say: “What’s the biggest blocker right now? Let’s identify which deliverables are critical-path and see if we can re-scope or re-assign to protect the Friday deadline.”",
+      nextSteps: "Map remaining tasks to owners, flag the specific bottleneck, and decide whether to reduce scope or add resources to hold the deadline.",
+      tacticalRationale: "A timeline slip threatens the project objective. Surfacing the exact bottleneck lets you make a scope or resource decision rather than accepting a blanket delay."
+    }
+  },
+  5: {
+    name: "Business Partnership",
+    objective: "Secure a partnership with clearly defined responsibilities and timelines.",
+    statement: "We can provide the technical team if you handle implementation.",
+    guidance: {
+      status: "LEVERAGE",
+      headline: "Lock In Terms",
+      suggestedResponse: "Say: “That division of work can accelerate delivery. Let’s formalize who owns each milestone and agree on a shared timeline so both teams are aligned.”",
+      nextSteps: "Draft a responsibility matrix (RACI) with named owners, milestone dates, and escalation paths. Send for sign-off within 48 hours.",
+      tacticalRationale: "The counterparty is offering concrete resources — a clear buying signal. Converting this verbal commitment into a documented structure locks in the partnership terms."
+    }
+  }
+};
+
+// =============================================
+// SECTION 2: DOM HELPER
+// =============================================
+function el(id) { return document.getElementById(id); }
+
+// =============================================
+// SECTION 3: CLOCK ENGINE
+// =============================================
+function startClockEngine() {
+  function tick() {
+    var now = new Date();
+    var lc = el("live-clock");
+    if (lc) lc.textContent = String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0");
+    var fc = el("footer-clock");
+    if (fc) fc.textContent = String(now.getUTCHours()).padStart(2,"0")+":"+String(now.getUTCMinutes()).padStart(2,"0")+":"+String(now.getUTCSeconds()).padStart(2,"0")+" UTC";
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// =============================================
+// SECTION 4: RAM COMPLIANCE BUFFER (PRIVACY REGEX)
+// =============================================
+function sanitizeInboundPayload(text) {
+  var s = String(text);
+  // Sequential regex sanitization in RAM
+  s = s.replace(/\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g, "[ENCRYPTED_CARD]");
+  s = s.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, "[ENCRYPTED_EMAIL]");
+  s = s.replace(/\b(?:\+?\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}\b/g, "[ENCRYPTED_CONTACT]");
+  return s;
+}
+
+// =============================================
+// SECTION 5: NEO-BRUTALIST TOAST NOTIFICATIONS
+// =============================================
+function showToast(message, type) {
+  var container = el("toast-container");
+  if (!container) return;
+  
+  var colorMap = {
+    info:    "bg-white border-2 border-black text-black shadow-[4px_4px_0px_#000]",
+    success: "bg-[#D1FAE5] border-2 border-black text-black shadow-[4px_4px_0px_#000]",
+    error:   "bg-[#FEE2E2] border-2 border-black text-black shadow-[4px_4px_0px_#000]",
+    warning: "bg-[#FEF3C7] border-2 border-black text-black shadow-[4px_4px_0px_#000]"
+  };
+  
+  var toastEl = document.createElement("div");
+  toastEl.className = "pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-lg text-xs font-black font-mono-app transition-all duration-200 " + (colorMap[type] || colorMap.info);
+  toastEl.style.cssText = "opacity:0;transform:translateY(10px);";
+  toastEl.setAttribute("role", type === "error" ? "alert" : "status");
+
+  var iconMap = {
+    info:    '<span class="w-2.5 h-2.5 bg-black inline-block"></span>',
+    success: '<span class="text-sm">⚡</span>',
+    error:   '<span class="text-sm">🚨</span>',
+    warning: '<span class="text-sm">⚠️</span>'
+  };
+
+  toastEl.innerHTML = (iconMap[type] || iconMap.info) + '<span>' + message + '</span>';
+  container.appendChild(toastEl);
+
+  requestAnimationFrame(function() {
+    toastEl.style.opacity = "1";
+    toastEl.style.transform = "translateY(0)";
+  });
+
+  setTimeout(function() {
+    toastEl.style.opacity = "0";
+    toastEl.style.transform = "translateY(10px)";
+    setTimeout(function() {
+      if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+    }, 250);
+  }, 4200);
+}
+
+// =============================================
+// SECTION 6: TRANSCRIPT LOG & CONSOLE
+// =============================================
+function appendTranscriptEntry(text, wasScrubbed, sourceTag) {
+  var sa = el("transcript-scroll-area");
+  if (!sa) return;
+  var es = el("transcript-empty-state");
+  if (es && es.parentNode) es.parentNode.removeChild(es);
+  var now = new Date();
+  var ts = String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0");
+  
+  var row = document.createElement("div");
+  row.className = "transcript-entry flex items-start gap-2.5 py-1.5 border-b border-neutral-300";
+  
+  var tEl = document.createElement("span");
+  tEl.className = "flex-shrink-0 text-neutral-500 font-bold text-xs select-none w-14";
+  tEl.textContent = ts;
+
+  var tagEl = document.createElement("span");
+  if (sourceTag === "DEMO") {
+    tagEl.className = "flex-shrink-0 text-[10px] px-1.5 py-0.2 rounded bg-[#F3E8FF] text-black border border-black font-black";
+    tagEl.textContent = "DEMO";
+  } else {
+    tagEl.className = "flex-shrink-0 text-[10px] px-1.5 py-0.2 rounded bg-[#FFE600] text-black border border-black font-black";
+    tagEl.textContent = "LIVE";
+  }
+
+  var bEl = document.createElement("span");
+  bEl.className = "text-black font-bold text-xs leading-relaxed break-words flex-1";
+  bEl.textContent = text;
+
+  row.appendChild(tEl);
+  row.appendChild(tagEl);
+  row.appendChild(bEl);
+
+  if (wasScrubbed) {
+    var sh = document.createElement("span");
+    sh.className = "flex-shrink-0 text-black text-[10px] px-1.5 py-0.2 rounded bg-[#A7F3D0] border border-black font-black";
+    sh.title = "PII scrubbed by RAM Compliance Buffer";
+    sh.textContent = "PII-SCRUBBED";
+    row.appendChild(sh);
+  }
+
+  sa.appendChild(row);
+  var ce = el("transcript-count");
+  if (ce) {
+    var count = sa.querySelectorAll(".transcript-entry").length;
+    ce.textContent = count + (count === 1 ? " entry" : " entries");
+  }
+  sa.scrollTop = sa.scrollHeight;
+}
+
+function updateSpeechDraft(text, sourceTag) {
+  var area = el("transcript-scroll-area");
+  if (!area) return;
+  var empty = el("transcript-empty-state");
+  if (empty && empty.parentNode) empty.parentNode.removeChild(empty);
+  if (!AppState.speechDraftRow || !AppState.speechDraftRow.parentNode) {
+    var row = document.createElement("div");
+    row.className = "transcript-entry flex items-start gap-2 py-1.5 border-b border-neutral-300 opacity-80";
+    row.dataset.speechDraft = "true";
+    var tag = document.createElement("span");
+    tag.className = "flex-shrink-0 text-[10px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-black border border-black font-black";
+    tag.textContent = "DRAFT";
+    var body = document.createElement("span");
+    body.className = "text-neutral-800 font-bold text-xs leading-relaxed break-words flex-1";
+    row.appendChild(tag);
+    row.appendChild(body);
+    area.appendChild(row);
+    AppState.speechDraftRow = row;
+  }
+  var bodyText = AppState.speechDraftRow.querySelector("span:last-child");
+  if (bodyText) bodyText.textContent = text;
+  area.scrollTop = area.scrollHeight;
+  var count = el("console-listen-label");
+  if (count) count.textContent = "Listening / Accumulating...";
+}
+
+function queueSpeechFragment(rawText, sourceTag, interimHypothesis) {
+  var fragment = String(rawText || "").replace(/\s+/g, " ").trim();
+  if (!fragment) return;
+  if (!interimHypothesis && !AppState.speechBuffer && AppState.lastSpeechFlushWasInterim && fragment.toLowerCase() === AppState.lastSpeechBlock.toLowerCase() && Date.now() - AppState.lastSpeechBlockAt < 5000) {
+    AppState.lastSpeechFlushWasInterim = false;
+    return;
+  }
+  if (interimHypothesis) {
+    AppState.speechBuffer = [AppState.speechCommittedBuffer.trim(), fragment].filter(Boolean).join(" ");
+  } else {
+    var committed = AppState.speechCommittedBuffer.trim();
+    if (!committed) AppState.speechCommittedBuffer = fragment;
+    else if (fragment !== committed && !committed.endsWith(" " + fragment)) AppState.speechCommittedBuffer = committed + " " + fragment;
+    AppState.speechBuffer = AppState.speechCommittedBuffer;
+    AppState.speechHadFinalFragment = true;
+  }
+  AppState.speechBufferSource = sourceTag || AppState.speechBufferSource || "LIVE";
+  updateSpeechDraft(AppState.speechBuffer, AppState.speechBufferSource);
+  setHUDAccumulating();
+  if (AppState.speechBufferTimer) clearTimeout(AppState.speechBufferTimer);
+  AppState.speechBufferTimer = setTimeout(finalizeSpeechBuffer, SPEECH_SILENCE_THRESHOLD_MS);
+}
+
+function finalizeSpeechBuffer() {
+  if (AppState.speechBufferTimer) clearTimeout(AppState.speechBufferTimer);
+  AppState.speechBufferTimer = null;
+  var completed = AppState.speechBuffer.trim();
+  var source = AppState.speechBufferSource || "LIVE";
+  AppState.lastSpeechBlock = completed;
+  AppState.lastSpeechBlockAt = Date.now();
+  AppState.lastSpeechFlushWasInterim = Boolean(completed && !AppState.speechHadFinalFragment);
+  AppState.speechBuffer = "";
+  AppState.speechCommittedBuffer = "";
+  AppState.speechHadFinalFragment = false;
+  AppState.speechBufferSource = "LIVE";
+  if (AppState.speechDraftRow && AppState.speechDraftRow.parentNode) AppState.speechDraftRow.parentNode.removeChild(AppState.speechDraftRow);
+  AppState.speechDraftRow = null;
+  if (completed) recordFinalTranscript(completed, source);
+  var listenLabel = el("console-listen-label");
+  if (listenLabel) listenLabel.textContent = AppState.isListening ? "Microphone active — listening" : "Microphone standby";
+}
+
+function ingestTranscript(rawText, sourceTag) {
+  queueSpeechFragment(rawText, sourceTag);
+}
+
+function recordFinalTranscript(rawText, sourceTag) {
+  var text = String(rawText || "").trim();
+  if (!text) return;
+  var sanitized = sanitizeInboundPayload(text);
+  AppState.transcriptHistory.push(sanitized);
+  AppState.sessionEntries.push({
+    timestamp: new Date().toISOString(),
+    text: sanitized,
+    source: sourceTag || "LIVE",
+    status: "IDLE",
+    nudge: ""
+  });
+  AppState.currentEntryIndex = AppState.sessionEntries.length - 1;
+  appendTranscriptEntry(sanitized, sanitized !== text, sourceTag || "LIVE");
+  processLiveIntelligence(sanitized);
+}
+
+function clearTranscript(showNotification) {
+  var sa = el("transcript-scroll-area");
+  if (!sa) return;
+  sa.querySelectorAll(".transcript-entry").forEach(function(e) { e.parentNode.removeChild(e); });
+  var existingEmpty = el("transcript-empty-state");
+  if (existingEmpty && existingEmpty.parentNode) existingEmpty.parentNode.removeChild(existingEmpty);
+  var es = document.createElement("div");
+  es.id = "transcript-empty-state";
+  es.className = "flex flex-col items-center justify-center h-full text-center py-12";
+  es.innerHTML = '<div class="w-12 h-12 rounded-lg bg-[#F4F4EE] border-2 border-black flex items-center justify-center text-xl mb-3 shadow-[2px_2px_0px_#000]">🎙️</div><p class="text-black font-black uppercase text-xs tracking-wider">Awaiting speech or scenario input</p><p class="text-neutral-500 font-bold text-[11px] mt-1 max-w-xs">Activate the session above or click any Real-World Scenario below.</p>';
+  sa.appendChild(es);
+  var ce = el("transcript-count");
+  if (ce) ce.textContent = "0 entries";
+  AppState.transcriptHistory = [];
+  AppState.speechBuffer = "";
+  AppState.speechCommittedBuffer = "";
+  AppState.speechBufferSource = "LIVE";
+  AppState.speechHadFinalFragment = false;
+  AppState.lastSpeechBlock = "";
+  AppState.lastSpeechBlockAt = 0;
+  AppState.lastSpeechFlushWasInterim = false;
+  if (AppState.speechBufferTimer) clearTimeout(AppState.speechBufferTimer);
+  AppState.speechBufferTimer = null;
+  AppState.speechDraftRow = null;
+  if (showNotification !== false) showToast("Transcript log cleared.", "info");
+}
+
+// =============================================
+// SECTION 7: STRATEGIC HUD STATE MACHINE
+// =============================================
+function updateHUDApiStatus(state, label) {
+  var dot = el("hud-api-dot"); var lbl = el("hud-api-label");
+  if (!dot || !lbl) return;
+  var cm = {
+    active: "bg-[#22C55E]",
+    objection: "bg-[#FF5C5C]",
+    leverage: "bg-[#22C55E]",
+    pending: "bg-[#FFE600]",
+    standby: "bg-neutral-400",
+    demo: "bg-[#C084FC]",
+    error: "bg-[#FF5C5C]"
+  };
+  dot.className = "w-2.5 h-2.5 rounded-full border border-black transition-all duration-200 " + (cm[state] || cm.standby);
+  lbl.textContent = label || "MODE: Standby";
+  var liveState = el("hud-live-state");
+  var liveDot = el("hud-live-dot");
+  if (liveState && AppState.isListening) {
+    var signal = state === "accumulating" ? "Listening / Accumulating..." : state === "pending" ? "Advisor thinking..." : state === "error" ? "Using local advisor" : state === "objection" ? "Objection" : (state === "leverage" ? "Leverage" : "Listening");
+    liveState.textContent = signal;
+    if (liveDot) liveDot.className = "w-2.5 h-2.5 rounded-full border border-black " + (state === "accumulating" ? "bg-[#38BDF8] animate-pulse" : state === "pending" ? "bg-[#FFE600] animate-pulse" : state === "error" ? "bg-[#F97316]" : state === "objection" ? "bg-[#FF5C5C] animate-pulse" : state === "leverage" ? "bg-[#22C55E] animate-pulse" : "bg-[#22C55E] animate-pulse");
+  }
+}
+
+function setHUDAccumulating() {
+  AppState.lastRequestId++;
+  var hud = el("hud-card");
+  if (hud) {
+    hud.classList.remove("hud-alert-objection", "hud-alert-leverage");
+    hud.classList.add("hud-idle-border");
+  }
+  var badge = el("hud-badge-container");
+  if (badge) { badge.classList.add("hidden"); badge.textContent = ""; }
+  var thinking = el("hud-advisor-thinking");
+  if (thinking) thinking.classList.add("hidden");
+  var guidance = el("hud-explanation-box");
+  if (guidance) guidance.classList.add("hidden");
+  var status = el("hud-status-label");
+  if (status) {
+    status.className = "text-xs font-black text-black uppercase tracking-widest mb-2 transition-all duration-200";
+    status.textContent = "Listening / Accumulating...";
+  }
+  var headline = el("hud-nudge-text");
+  if (headline) {
+    headline.className = "text-3xl font-black text-neutral-500 uppercase tracking-tight leading-snug transition-all duration-200";
+    headline.textContent = "Listening...";
+  }
+  var listenLabel = el("console-listen-label");
+  if (listenLabel) listenLabel.textContent = "Listening / Accumulating...";
+  updateHUDApiStatus("accumulating", "Listening / Accumulating...");
+}
+
+function updateHUDTimestamp() {
+  var e = el("hud-last-update");
+  if (!e) return;
+  var now = new Date();
+  e.textContent = "Updated: "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0");
+}
+
+function setHUDThinking() {
+  var hud = el("hud-card");
+  if (hud) {
+    hud.classList.remove("hud-alert-objection", "hud-alert-leverage");
+    hud.classList.add("hud-idle-border");
+  }
+  var badge = el("hud-badge-container");
+  if (badge) { badge.classList.add("hidden"); badge.textContent = ""; }
+  var thinking = el("hud-advisor-thinking");
+  if (thinking) thinking.classList.remove("hidden");
+  var status = el("hud-status-label");
+  if (status) {
+    status.className = "text-xs font-black text-amber-700 uppercase tracking-widest mb-2 transition-all duration-200";
+    status.textContent = "Advisor thinking...";
+  }
+  var headline = el("hud-nudge-text");
+  if (headline) {
+    headline.className = "text-3xl font-black text-black uppercase tracking-tight leading-snug transition-all duration-200";
+    headline.textContent = "Analyzing Turn...";
+  }
+  var box = el("hud-explanation-box");
+  if (box) box.classList.add("hidden");
+  updateHUDApiStatus("pending", "Gemini analyzing...");
+}
+
+function setHUDIdle(headline, guidance, provider) {
+  var hc = el("hud-card"); if (!hc) return;
+  recordSessionClassification("IDLE", headline || "");
+  hc.classList.remove("hud-alert-objection","hud-alert-leverage");
+  hc.classList.add("hud-idle-border");
+  var bw = el("hud-badge-container"); if (bw) { bw.classList.add("hidden"); bw.innerHTML = ""; }
+  setHUDSignalText("IDLE", headline);
+  renderAdvisorGuidance(guidance, "IDLE");
+  updateHUDApiStatus("active", (provider || "Gemini") + ": IDLE");
+}
+
+function setHUDObjection(headline, guidance, provider) {
+  var hc = el("hud-card"); if (!hc) return;
+  headline = normalizeNudge(headline);
+  recordSessionClassification("OBJECTION", headline);
+  hc.classList.remove("hud-idle-border","hud-alert-leverage");
+  hc.classList.add("hud-alert-objection");
+  
+  var bw = el("hud-badge-container");
+  if (bw) {
+    bw.classList.remove("hidden");
+    bw.innerHTML = "";
+    var nb = document.createElement("span");
+    nb.className = "nb-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-[#FF5C5C] text-black shadow-[2px_2px_0px_#000]";
+    nb.innerHTML = '<span class="w-2 h-2 rounded-full bg-black animate-pulse"></span> OBJECTION ALERT';
+    bw.appendChild(nb);
+  }
+  setHUDSignalText("OBJECTION", headline);
+  renderAdvisorGuidance(guidance, "OBJECTION");
+  updateHUDApiStatus("objection", (provider || "Gemini") + ": Objection");
+  updateHUDTimestamp();
+}
+
+function setHUDLeverage(headline, guidance, provider) {
+  var hc = el("hud-card"); if (!hc) return;
+  headline = normalizeNudge(headline);
+  recordSessionClassification("LEVERAGE", headline);
+  hc.classList.remove("hud-idle-border","hud-alert-objection");
+  hc.classList.add("hud-alert-leverage");
+
+  var bw = el("hud-badge-container");
+  if (bw) {
+    bw.classList.remove("hidden");
+    bw.innerHTML = "";
+    var nb = document.createElement("span");
+    nb.className = "nb-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-[#22C55E] text-black shadow-[2px_2px_0px_#000]";
+    nb.innerHTML = '<span class="w-2 h-2 rounded-full bg-black animate-pulse"></span> LEVERAGE CAPTURED';
+    bw.appendChild(nb);
+  }
+  setHUDSignalText("LEVERAGE", headline);
+  renderAdvisorGuidance(guidance, "LEVERAGE");
+  updateHUDApiStatus("leverage", (provider || "Gemini") + ": Leverage");
+  updateHUDTimestamp();
+}
+
+function setHUDSignalText(status, headline) {
+  var thinking = el("hud-advisor-thinking");
+  if (thinking) thinking.classList.add("hidden");
+  var label = el("hud-status-label");
+  var nudge = el("hud-nudge-text");
+  
+  if (label) {
+    var labelClass = status === "OBJECTION" ? "text-[#DC2626]" : status === "LEVERAGE" ? "text-[#16A34A]" : "text-neutral-500";
+    label.className = "text-xs font-black uppercase tracking-widest mb-2 transition-all duration-200 " + labelClass;
+    label.textContent = status === "OBJECTION" ? "🚨 OBJECTION DETECTED" : status === "LEVERAGE" ? "⚡ HIGH-VALUE LEVERAGE" : "AWAITING TACTICAL SIGNAL";
+  }
+  if (nudge) {
+    var nudgeColor = status === "OBJECTION" ? "text-black" : status === "LEVERAGE" ? "text-black" : "text-neutral-400";
+    nudge.className = "text-3xl sm:text-4xl font-black uppercase tracking-tight leading-snug transition-all duration-200 nudge-appear " + nudgeColor;
+    nudge.textContent = headline || "— —";
+  }
+}
+
+function renderAdvisorGuidance(guidance, status) {
+  var box = el("hud-explanation-box");
+  if (!box || !guidance) return;
+  var action = el("hud-guidance-action");
+  var next = el("hud-guidance-next");
+  var rationale = el("hud-explanation-text");
+  if (action) action.textContent = guidance.suggestedResponse || "—";
+  if (next) next.textContent = guidance.nextSteps || "—";
+  if (rationale) rationale.textContent = guidance.tacticalRationale || "—";
+  
+  box.classList.remove("hidden");
+}
+
+function resetHUDToStandby() {
+  var hc = el("hud-card"); if (!hc) return;
+  hc.classList.remove("hud-alert-objection","hud-alert-leverage");
+  hc.classList.add("hud-idle-border");
+  var bw = el("hud-badge-container"); if (bw) { bw.classList.add("hidden"); bw.innerHTML = ""; }
+  var sl = el("hud-status-label"); if (sl) { sl.className="text-xs font-black text-neutral-500 uppercase tracking-widest mb-2 transition-all duration-200"; sl.textContent="Awaiting Tactical Signal"; }
+  var nt = el("hud-nudge-text"); if (nt) { nt.className="text-3xl sm:text-4xl font-black text-neutral-400 uppercase tracking-tight leading-snug transition-all duration-200"; nt.textContent="— —"; }
+  var st = el("hud-sub-text"); if (st) { st.className="mt-2 text-xs text-neutral-500 font-bold font-mono-app max-w-md"; st.textContent="AI copilot will surface real-time actionable cues in your peripheral vision."; }
+  var eb = el("hud-explanation-box"); if (eb) eb.classList.add("hidden");
+  var lu = el("hud-last-update"); if (lu) lu.textContent="—";
+  updateHUDApiStatus("standby","MODE: Standby");
+}
+
+function normalizeNudge(value) {
+  return String(value || "").replace(/[\[\]"`*]/g, "").replace(/[.!?,:;]+$/g, "").trim().split(/\s+/).filter(Boolean).slice(0, 4).join(" ");
+}
+
+function recordSessionClassification(status, nudge) {
+  if (!AppState.isListening || AppState.currentEntryIndex < 0) return;
+  var entry = AppState.sessionEntries[AppState.currentEntryIndex];
+  if (!entry) return;
+  entry.status = status;
+  entry.nudge = nudge || "";
+  entry.classifiedAt = Date.now();
+}
+
+function resetDemoToStandby() {
+  for (var s = 1; s <= 5; s++) {
+    var card = el("scenario-card-" + s);
+    if (card) card.classList.remove("scenario-card-active");
+  }
+  AppState.selectedScenarioId = null;
+  resetHUDToStandby();
+  showToast("Scenarios and HUD reset to standby state.", "info");
+}
+
+// =============================================
+// SECTION 8: INTERACTIVE REAL-WORLD DEMO ENGINE
+// =============================================
+function selectAndRunScenario(scenarioId) {
+  var sc = DEMO_SCENARIOS[scenarioId];
+  if (!sc) return;
+
+  for (var s = 1; s <= 5; s++) {
+    var card = el("scenario-card-" + s);
+    if (card) {
+      if (s === scenarioId) card.classList.add("scenario-card-active");
+      else card.classList.remove("scenario-card-active");
+    }
+  }
+  AppState.selectedScenarioId = scenarioId;
+
+  AppState.objective = sc.objective;
+  var oi = el("objective-input"); if (oi) oi.value = sc.objective;
+  var od = el("hud-objective-display"); if (od) od.textContent = sc.objective;
+
+  // Record statement into transcript
+  var statements = Array.isArray(sc.statement) ? sc.statement : [sc.statement];
+  statements.forEach(function(line) {
+    var sanitized = sanitizeInboundPayload(String(line).trim());
+    AppState.transcriptHistory.push(sanitized);
+    AppState.sessionEntries.push({
+      timestamp: new Date().toISOString(),
+      text: sanitized,
+      source: "DEMO",
+      status: "IDLE",
+      nudge: ""
+    });
+    AppState.currentEntryIndex = AppState.sessionEntries.length - 1;
+    appendTranscriptEntry(sanitized, sanitized !== line, "DEMO");
+  });
+
+  // Apply pre-configured guidance
+  if (sc.guidance) {
+    var g = sc.guidance;
+    var guidanceObj = {
+      suggestedResponse: g.suggestedResponse,
+      nextSteps: g.nextSteps,
+      tacticalRationale: g.tacticalRationale
+    };
+    if (g.status === "OBJECTION") setHUDObjection(g.headline, guidanceObj, "Scenario preset");
+    else if (g.status === "LEVERAGE") setHUDLeverage(g.headline, guidanceObj, "Scenario preset");
+    else setHUDIdle(g.headline, guidanceObj, "Scenario preset");
+    showToast("Scenario loaded: " + sc.name, "info");
+  } else {
+    var lastLine = statements[statements.length - 1];
+    processLiveIntelligence(sanitizeInboundPayload(String(lastLine).trim()));
+  }
+}
+
+// =============================================
+// SECTION 9: QUICK TEST CASES ENGINE
+// =============================================
+function runQuickTest(testName, objective, statement) {
+  AppState.objective = objective;
+  var oi = el("objective-input"); if (oi) oi.value = objective;
+  var od = el("hud-objective-display"); if (od) od.textContent = objective;
+
+  ingestTranscript(statement, "DEMO");
+}
+
+// =============================================
+// SECTION 10: GEMINI LIVE ADVISOR ENGINE
+// =============================================
+function processLiveIntelligence(transcriptText) {
+  setHUDThinking();
+  return callGeminiAdvisor(transcriptText);
+}
+
+async function callGeminiAdvisor(transcriptLine) {
+  var requestId = ++AppState.lastRequestId;
+  if (AppState.secureEnvStatus && !AppState.secureEnvStatus.gemini) {
+    console.warn("[Ghost] GEMINI_API_KEY is not configured on local server; using local heuristic.");
+    renderLocalAdvisorGuidance(transcriptLine);
+    return;
+  }
+  var objective = sanitizeInboundPayload(String(AppState.objective || ""));
+  var history = AppState.transcriptHistory.slice(-8, -1);
+  var historyText = history.length ? history.map(function(line, index) { return (index + 1) + ". " + line; }).join("\n") : "No earlier statements.";
+  var prompt = "You are an expert human corporate negotiation advisor sitting next to the user. User's Objective: " + objective + ". Recent Conversation: " + historyText + ". Latest statement heard: " + sanitizeInboundPayload(String(transcriptLine)) + ". Treat speech-to-text as imperfect: silently correct likely phonetic typos and mishearings using the whole conversation and business context; for example interpret ‘fourteen first rates’ as ‘higher rates’ and ‘welcome away’ as ‘walk away’. Never echo, quote, or reuse the opening words of a noisy transcript as the headline. Classify underlying intent explicitly: unresolved security or compliance requirements, pending legal review, budget constraints, competitor alternatives, or a pilot demanded before approval are OBJECTION; completed security/compliance clearance, legal approval, or a requested/accepted pilot signaling active evaluation are STRATEGIC/LEVERAGE. These named business signals must never default to IDLE. Use IDLE only when no meaningful objection or strategic signal is present. Give polished professional mentoring: address the exact concern, protect value, and suggest flexible terms, phased deployment, or a concrete pilot/approval milestone when relevant. Return exactly these five labeled sections: STATUS: [OBJECTION, STRATEGIC/LEVERAGE, or IDLE], HEADLINE NUDGE: [An imperative executive command of 2-4 words: action verb + strategic object; e.g. ‘Route to Legal’, ‘Lock In Terms’, ‘Verify Compliance’, ‘Defend Premium Value’. Do not echo the client’s words or transcript opening.], SUGGESTED RESPONSE: [Specific polished phrase to speak next], NEXT STEPS: [Concrete milestone], TACTICAL RATIONALE: [Why this matters to the objective]. Keep the headline punchy, command-oriented, and highly contextual. Keep all advice actionable and tailored; do not return JSON or add other sections.";
+  var requestBody = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+  try {
+    var response = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+    if (requestId !== AppState.lastRequestId) return;
+    if (!response.ok) {
+      var errorBody = await response.text();
+      var apiMessage = errorBody;
+      try {
+        var parsedError = JSON.parse(errorBody);
+        apiMessage = parsedError.error && parsedError.error.message ? parsedError.error.message : errorBody;
+      } catch (parseError) {}
+      if (response.status === 429) {
+        console.warn("[Ghost] Gemini quota reached; applying instant offline guidance.");
+        renderLocalAdvisorGuidance(transcriptLine);
+        showToast("AI quota reached — offline guidance is active.", "info");
+        return;
+      }
+      throw new Error("Gemini API HTTP " + response.status + " " + response.statusText + ": " + apiMessage);
+    }
+    var data = await response.json();
+    if (requestId !== AppState.lastRequestId) return;
+    var content = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts
+      ? data.candidates[0].content.parts.map(function(part) { return part.text || ""; }).join("\n").trim()
+      : "";
+    if (!content) throw new Error("Gemini response contained no advisor text. Response: " + JSON.stringify(data));
+    var guidance = parseGeminiAdvisorResponse(content, transcriptLine);
+    if (!guidance) throw new Error("Gemini response is missing one or more labeled sections. Response: " + content);
+    applyAdvisorGuidance(guidance, "Gemini");
+  } catch (error) {
+    if (requestId !== AppState.lastRequestId) return;
+    console.error("[Ghost] Gemini advisor request failed; using local advisor heuristic:", error);
+    renderLocalAdvisorGuidance(transcriptLine);
+  }
+}
+
+function parseGeminiAdvisorResponse(responseText, transcriptLine) {
+  var payload = String(responseText || "").trim().replace(/^```(?:text)?\s*/i, "").replace(/\s*```$/, "");
+  function readSection(label, followingLabels) {
+    var terminator = followingLabels.join("|");
+    var expression = new RegExp("(?:^|\\n)\\s*" + label + "\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:" + terminator + ")\\s*:|$)", "i");
+    var match = payload.match(expression);
+    return match && match[1] ? match[1].trim().replace(/^\[|\]$/g, "").trim() : "";
+  }
+  var guidance = {
+    headlineNudge: readSection("HEADLINE NUDGE", ["SUGGESTED RESPONSE", "NEXT STEPS", "TACTICAL RATIONALE"]),
+    suggestedResponse: readSection("SUGGESTED RESPONSE", ["NEXT STEPS", "TACTICAL RATIONALE"]),
+    nextSteps: readSection("NEXT STEPS", ["TACTICAL RATIONALE"]),
+    tacticalRationale: readSection("TACTICAL RATIONALE", []),
+    status: ""
+  };
+  var statusMatch = payload.match(/(?:^|\n)\s*STATUS\s*:\s*(OBJECTION|STRATEGIC\s*\/\s*LEVERAGE|STRATEGIC|LEVERAGE|IDLE)\b/i);
+  if (statusMatch) guidance.status = /STRATEGIC|LEVERAGE/i.test(statusMatch[1]) ? "LEVERAGE" : statusMatch[1].toUpperCase();
+  var sourceWords = String(transcriptLine || "").toLowerCase().match(/[a-z0-9]+/g) || [];
+  var rawHeadlineWords = guidance.headlineNudge.toLowerCase().match(/[a-z0-9]+/g) || [];
+  if (sourceWords.length >= 2 && rawHeadlineWords.length >= 2 && rawHeadlineWords[0] === sourceWords[0] && rawHeadlineWords[1] === sourceWords[1]) {
+    guidance.headlineNudge = buildLocalAdvisorGuidance(transcriptLine, AppState.objective).headline;
+  }
+  guidance.headlineNudge = normalizeNudge(guidance.headlineNudge);
+  var headlineWords = guidance.headlineNudge.split(/\s+/).filter(Boolean);
+  return headlineWords.length >= 2 && headlineWords.length <= 4 && guidance.suggestedResponse && guidance.nextSteps && guidance.tacticalRationale ? guidance : null;
+}
+
+function applyAdvisorGuidance(guidance, provider, modelStatus) {
+  var heuristic = buildLocalAdvisorGuidance(AppState.sessionEntries[AppState.currentEntryIndex]?.text || "", AppState.objective);
+  var status = heuristic.businessSignal ? heuristic.status : (modelStatus || guidance.status || heuristic.status);
+  var combined = {
+    headlineNudge: guidance.headlineNudge || heuristic.headline,
+    suggestedResponse: guidance.suggestedResponse,
+    nextSteps: guidance.nextSteps,
+    tacticalRationale: guidance.tacticalRationale
+  };
+  if (status === "OBJECTION") setHUDObjection(combined.headlineNudge, combined, provider);
+  else if (status === "LEVERAGE") setHUDLeverage(combined.headlineNudge, combined, provider);
+  else setHUDIdle(combined.headlineNudge, combined, provider);
+}
+
+function renderLocalAdvisorGuidance(transcriptLine) {
+  var guidance = buildLocalAdvisorGuidance(transcriptLine, AppState.objective);
+  console.info("[Ghost] Using contextual local advisor guidance.");
+  if (guidance.status === "OBJECTION") setHUDObjection(guidance.headline, guidance, "Local advisor");
+  else if (guidance.status === "LEVERAGE") setHUDLeverage(guidance.headline, guidance, "Local advisor");
+  else setHUDIdle(guidance.headline, guidance, "Local advisor");
+}
+
+function buildLocalAdvisorGuidance(transcriptLine, meetingObjective) {
+  var statement = String(transcriptLine || "").replace(/\s+/g, " ").trim();
+  var objective = String(meetingObjective || "the meeting objective").replace(/\s+/g, " ").trim();
+  var lowerStatement = statement.toLowerCase();
+  var businessSignal = classifyBusinessSignal(lowerStatement);
+  var walkAwayConcern = /\b(walk(?:ing)? away|walk away|welcome away|take our business elsewhere|go with (?:someone|another|the other)|won't proceed|will not proceed|pull out|end the deal)\b/i.test(lowerStatement);
+  var budgetConcern = /\b(budget|can't afford|cannot afford|not affordable|no funds|no budget|over budget|budget constraint|budget allocated|price cap)\b/i.test(lowerStatement);
+  var rateConcern = /\b(price|pricing|cheaper|cost|discount|competitor|expensive|lower rate|higher rate|rate increase|fourteen first rates|rates? are high)\b/i.test(lowerStatement);
+  var objectionSignals = [/\b(price|pricing|cheaper|cost|budget|discount|competitor|concern|risk|delay|late|slip(?:ped)?|behind|can't|cannot|problem|issue|not satisfied|unhappy|difficult|walk(?:ing)? away|welcome away|elsewhere|pull out)\b/i, /\b(compare|lower|expensive|over budget|miss(?:ed)?|blocked|blocker|unclear|push back|won't proceed|not affordable|no funds|higher rates|fourteen first rates)\b/i];
+  var leverageSignals = [/\b(approved|agree|agreed|ready|sign|commit|committed|proceed|partner|provide|support|accept|confirmed)\b/i, /\b(save|savings|works for us|move forward|green light|available|allocate)\b/i];
+  var objectionScore = objectionSignals.filter(function(pattern) { return pattern.test(statement); }).length;
+  var leverageScore = leverageSignals.filter(function(pattern) { return pattern.test(statement); }).length;
+  var status = businessSignal ? businessSignal.status : objectionScore > leverageScore ? "OBJECTION" : leverageScore > objectionScore ? "LEVERAGE" : "IDLE";
+  var headline = businessSignal ? businessSignal.headline : walkAwayConcern ? "Retain At-Risk Deal" : budgetConcern ? "Address Budget Pushback" : rateConcern && status === "OBJECTION" ? "Defend Premium Value" : status === "OBJECTION" ? "Address Key Concern" : status === "LEVERAGE" ? "Secure Next Commitment" : "Clarify Objective";
+  var quotedObjective = objective.length > 100 ? objective.slice(0, 97) + "..." : objective;
+  var suggestedResponse;
+  var nextSteps;
+  var tacticalRationale;
+  if (status === "OBJECTION") {
+    if (businessSignal && businessSignal.kind === "security") {
+      suggestedResponse = "Say: “We take your security requirements seriously. Which control or evidence would your review team need to validate first?”";
+      nextSteps = "Confirm the required security evidence, name the review owner, and agree on a date to resolve the open item.";
+      tacticalRationale = "An unresolved security or compliance review can block approval; identifying the exact evidence and owner keeps the objective moving without making unsupported claims.";
+    } else if (businessSignal && businessSignal.kind === "legal") {
+      suggestedResponse = "Say: “Let’s identify the specific clause or risk legal needs resolved so we can bring the agreement to approval.”";
+      nextSteps = "Capture the outstanding legal question, assign an owner, and set a review checkpoint.";
+      tacticalRationale = "Pending legal review is a decision gate; narrowing the open issue is the clearest route toward the objective.";
+    } else if (businessSignal && businessSignal.kind === "pilotCondition") {
+      suggestedResponse = "Say: “Let’s define what a successful pilot must prove and make sure the test is scoped to the outcomes you need.”";
+      nextSteps = "Agree on pilot scope, success criteria, owner, and the decision date that follows the evaluation.";
+      tacticalRationale = "A pilot required before approval is a conditional objection; explicit success criteria prevent an open-ended evaluation.";
+    } else if (walkAwayConcern) {
+      suggestedResponse = "Say: “I’d like to understand what is driving that decision. Before we close the door, could we compare a phased rollout or payment schedule against the outcomes you need?”";
+      nextSteps = "Identify the deal-breaker, then offer one value-preserving option such as phased deployment or flexible payment terms.";
+      tacticalRationale = "A possible walk-away signal puts the objective at risk; explore the underlying constraint and preserve value before conceding price.";
+    } else if (budgetConcern) {
+      suggestedResponse = "Say: “I understand the budget constraint. Could we look at a phased deployment or payment schedule that fits your budget while protecting the outcomes you need?”";
+      nextSteps = "Clarify the budget limit and timing, then compare a phased scope or flexible payment plan against the value required.";
+      tacticalRationale = "Budget resistance is an objection, but it may be addressed through scope or timing rather than an immediate price discount.";
+    } else if (rateConcern) {
+      suggestedResponse = "Say: “Let’s compare the outcomes, support, and total cost before deciding on the rate. Which result matters most to your team?”";
+      nextSteps = "Confirm the decision criteria and quantify the value difference before discussing any commercial adjustment.";
+      tacticalRationale = "Rate or competitor pressure challenges the objective; anchor the discussion in measurable value before considering concessions.";
+    } else {
+      suggestedResponse = "Say: “I hear there’s a concern. Which specific condition would help us make progress while staying aligned with the agreed objective?”";
+      nextSteps = "Clarify the main constraint, then agree on one measurable action that keeps the objective moving forward.";
+      tacticalRationale = "The statement signals a potential blocker; uncover its cause and decision criteria before considering a concession.";
+    }
+  } else if (status === "LEVERAGE") {
+    suggestedResponse = "Say: “That sounds like progress. Can we confirm the specific commitment that best advances ‘" + quotedObjective + "’?”";
+    nextSteps = "Turn the positive signal into a named owner, a date, or a specific decision tied to ‘" + quotedObjective + "’.";
+    tacticalRationale = "The conversation signals willingness or forward movement; securing a concrete commitment advances the meeting objective.";
+  } else {
+    suggestedResponse = "Say: “Thanks, that context helps. What matters most as we work toward ‘" + quotedObjective + "’?”";
+    nextSteps = "Ask one open question to surface decision criteria or a milestone connected to the objective.";
+    tacticalRationale = "The conversation does not clearly signal resistance or commitment; clarify what matters before steering toward the objective.";
+  }
+  return { status: status, headline: headline, suggestedResponse: suggestedResponse, nextSteps: nextSteps, tacticalRationale: tacticalRationale, businessSignal: Boolean(businessSignal) };
+}
+
+function classifyBusinessSignal(statement) {
+  var positiveApproval = /\b(approved|cleared|passed|signed off|certified|compliant|accepted)\b/i.test(statement);
+  var conditionalPilot = /\b(pilot|proof of concept|poc)\b/i.test(statement) && /\b(required|require|need|must|before approval|before we proceed|condition|only if|only after)\b/i.test(statement);
+  if (conditionalPilot) return { status: "OBJECTION", headline: "Address Pilot Requirement", kind: "pilotCondition" };
+  if (/\b(pilot|proof of concept|poc|proof-of-concept|trial deployment)\b/i.test(statement)) return { status: "LEVERAGE", headline: "Advance Pilot Request", kind: "pilot" };
+  if (/\b(security|compliance|legal|regulatory|privacy|soc\s*2|gdpr|penetration test|data residency|counsel)\b/i.test(statement)) {
+    var securityReview = /\b(security|privacy|soc\s*2|gdpr|penetration test|data residency)\b/i.test(statement);
+    var legalReview = /\b(legal|counsel)\b/i.test(statement);
+    if (positiveApproval) return { status: "LEVERAGE", headline: securityReview ? "Leverage Security Clearance" : "Advance Legal Approval", kind: securityReview ? "security" : "legal" };
+    return { status: "OBJECTION", headline: legalReview ? "Resolve Legal Review" : "Address Security Review", kind: legalReview ? "legal" : "security" };
+  }
+  if (/\b(competitor|alternative vendor|other vendor|another provider|other provider|competing offer|vendor\s+[a-z0-9]+|lower quote)\b/i.test(statement)) {
+    if (/\b(chose|selected|prefer|preferred|rather than)\b/i.test(statement)) return { status: "LEVERAGE", headline: "Leverage Vendor Selection", kind: "competitor" };
+    return { status: "OBJECTION", headline: "Counter Competitor Claim", kind: "competitor" };
+  }
+  if (/\b(budget|afford|funding|spend limit|price cap)\b/i.test(statement)) {
+    if (positiveApproval && /\b(allocated|approved|available|secured|released)\b/i.test(statement)) return { status: "LEVERAGE", headline: "Advance Budget Approval", kind: "budget" };
+    return { status: "OBJECTION", headline: "Address Budget Constraint", kind: "budget" };
+  }
+  return null;
+}
+
+// =============================================
+// SECTION 12: BROWSER SPEECH RECOGNITION ENGINE
+// =============================================
+function buildSpeechRecognitionEngine() {
+  var SRAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SRAPI) return null;
+  var recognition;
+  try { recognition = new SRAPI(); }
+  catch (error) {
+    console.warn("[Ghost] Browser speech recognition could not initialize.");
+    return null;
+  }
+  recognition.continuous     = true;
+  recognition.interimResults = true;
+  recognition.lang           = "en-US";
+
+  recognition.onresult = function(event) {
+    var i = event.resultIndex; var len = event.results.length;
+    while (i < len) {
+      var rawText = String(event.results[i][0].transcript).trim();
+      if (rawText.length > 0) {
+        if (event.results[i].isFinal) queueSpeechFragment(rawText, "LIVE", false);
+        else queueSpeechFragment(rawText, "LIVE", true);
+      }
+      i++;
+    }
+  };
+
+  recognition.onend = function() {
+    if (AppState.isListening && AppState.captureMode === "browser") {
+      try { recognition.start(); } catch (re) {
+        setTimeout(function() {
+          if (AppState.isListening && AppState.captureMode === "browser") {
+            try { recognition.start(); } catch (se) {
+              console.warn("[Ghost] Speech restart deferred:", se.message);
+            }
+          }
+        }, 400);
+      }
+    }
+  };
+
+  recognition.onerror = function(event) {
+    var et = String(event.error);
+    if (et === "no-speech") return;
+    if (et === "audio-capture" || et === "not-allowed" || et === "service-not-allowed") {
+      enterSimulationMode("Microphone permission or capture is unavailable.");
+    }
+  };
+
+  recognition.onstart = function() {
+    console.info("[Ghost] Speech recognition listening.");
+  };
+
+  return recognition;
+}
+
+// =============================================
+// SECTION 13: SESSION LIFECYCLE CONTROLS
+// =============================================
+function validateSessionInputs() {
+  var oi = el("objective-input");
+  var ov = String(oi ? oi.value : "").trim();
+  if (!ov || ov.length < 3) {
+    if (oi) oi.value = "Close the software deal at premium pricing without offering discounts.";
+    AppState.objective = "Close the software deal at premium pricing without offering discounts.";
+  }
+  return null;
+}
+
+async function loadSecureEnvStatus() {
+  var statusText = el("secure-api-status");
+  var detail = el("secure-api-status-detail");
+  var dot = el("secure-api-status-dot");
+  try {
+    var response = await fetch("/api/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    var status = await response.json();
+    AppState.secureEnvStatus = { gemini: Boolean(status.geminiConfigured), deepgram: Boolean(status.deepgramConfigured) };
+    if (status.geminiConfigured && status.deepgramConfigured) {
+      if (statusText) statusText.textContent = "API Connected (Local Gateway)";
+      if (detail) detail.textContent = "Gemini and Deepgram keys are active server-side.";
+      if (dot) dot.className = "w-3 h-3 rounded-full bg-[#22C55E] border-1.5 border-black";
+    } else if (status.geminiConfigured || status.deepgramConfigured) {
+      if (statusText) statusText.textContent = "API Partially Connected";
+      if (detail) detail.textContent = (status.geminiConfigured ? "Gemini ready" : "Gemini key missing") + " · " + (status.deepgramConfigured ? "Deepgram ready" : "Deepgram key missing");
+      if (dot) dot.className = "w-3 h-3 rounded-full bg-[#FFE600] border-1.5 border-black";
+    } else {
+      if (statusText) statusText.textContent = "API Standby (Local Heuristic Ready)";
+      if (detail) detail.textContent = "Running offline corporate advisor heuristic. Real provider proxy ready.";
+      if (dot) dot.className = "w-3 h-3 rounded-full bg-[#3B82F6] border-1.5 border-black";
+    }
+    return AppState.secureEnvStatus;
+  } catch (error) {
+    AppState.secureEnvStatus = { gemini: false, deepgram: false };
+    if (statusText) statusText.textContent = "Local Advisor Engine (Ready)";
+    if (detail) detail.textContent = "Offline heuristic active. Start local proxy to enable Gemini.";
+    if (dot) dot.className = "w-3 h-3 rounded-full bg-[#22C55E] border-1.5 border-black";
+    return AppState.secureEnvStatus;
+  }
+}
+
+async function startConfiguredSpeechCapture() {
+  var secureStatus = AppState.secureEnvStatus || await loadSecureEnvStatus();
+  if (!AppState.isListening) return;
+  if (secureStatus.deepgram) {
+    startDeepgramStream();
+  } else {
+    startBrowserSpeech("Deepgram is not configured in the server environment.");
+  }
+}
+
+function setMicrophoneStatus(label, active) {
+  var status = el("mic-status-label");
+  var meter = el("mic-equalizer");
+  if (status) status.textContent = label;
+  if (meter) meter.classList.toggle("mic-meter-active", Boolean(active));
+}
+
+function startMicrophoneMeter(stream) {
+  var AudioContextAPI = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextAPI) return;
+  try {
+    AppState.audioContext = new AudioContextAPI();
+    var source = AppState.audioContext.createMediaStreamSource(stream);
+    AppState.audioAnalyser = AppState.audioContext.createAnalyser();
+    AppState.audioAnalyser.fftSize = 256;
+    source.connect(AppState.audioAnalyser);
+    var samples = new Uint8Array(AppState.audioAnalyser.fftSize);
+    var bars = el("mic-equalizer").querySelectorAll("i");
+    function drawMeter() {
+      if (!AppState.audioAnalyser) return;
+      AppState.audioAnalyser.getByteTimeDomainData(samples);
+      var energy = 0;
+      for (var i = 0; i < samples.length; i++) energy += Math.pow((samples[i] - 128) / 128, 2);
+      var level = Math.sqrt(energy / samples.length);
+      bars.forEach(function(bar, index) {
+        bar.style.height = Math.max(4, Math.min(16, 4 + level * (38 + index * 3))) + "px";
+      });
+      AppState.meterFrame = requestAnimationFrame(drawMeter);
+    }
+    drawMeter();
+  } catch (error) {
+    console.warn("[Ghost] Microphone meter unavailable:", error.message);
+  }
+}
+
+function stopAudioRuntime() {
+  if (AppState.recognitionInstance) {
+    try { AppState.recognitionInstance.stop(); } catch (error) {}
+    AppState.recognitionInstance = null;
+  }
+  if (AppState.mediaRecorder) {
+    try { if (AppState.mediaRecorder.state !== "inactive") AppState.mediaRecorder.stop(); } catch (error) {}
+    AppState.mediaRecorder = null;
+  }
+  var socket = AppState.deepgramSocket;
+  AppState.deepgramSocket = null;
+  if (socket && socket.readyState < WebSocket.CLOSING) {
+    try { socket.close(1000, "Session ended"); } catch (error) {}
+  }
+  if (AppState.mediaStream) {
+    AppState.mediaStream.getTracks().forEach(function(track) { track.stop(); });
+    AppState.mediaStream = null;
+  }
+  if (AppState.meterFrame) cancelAnimationFrame(AppState.meterFrame);
+  AppState.meterFrame = 0;
+  AppState.audioAnalyser = null;
+  if (AppState.audioContext) {
+    try { AppState.audioContext.close(); } catch (error) {}
+    AppState.audioContext = null;
+  }
+  setMicrophoneStatus("Standby", false);
+}
+
+function startBrowserSpeech(fallbackReason) {
+  if (!AppState.isListening) return;
+  var engine = buildSpeechRecognitionEngine();
+  if (!engine) {
+    enterSimulationMode(fallbackReason || "Browser speech recognition is unavailable.");
+    return false;
+  }
+  AppState.captureMode = "browser";
+  AppState.recognitionInstance = engine;
+  try {
+    engine.start();
+    setMicrophoneStatus("Web Speech", true);
+    return true;
+  } catch (error) {
+    console.warn("[Ghost] Speech recognition start exception:", error);
+    enterSimulationMode("Browser microphone access is unavailable.");
+    return false;
+  }
+}
+
+function enterSimulationMode(reason) {
+  if (!AppState.isListening || AppState.captureMode === "simulation") return;
+  AppState.captureMode = "simulation";
+  stopAudioRuntime();
+  setMicrophoneStatus("Text / scenarios", false);
+  var statusDot = el("header-status-dot");
+  var statusText = el("header-status-text");
+  if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-[#FFE600] border border-black";
+  if (statusText) statusText.textContent = "SIMULATION";
+  var listenLabel = el("console-listen-label");
+  if (listenLabel) listenLabel.textContent = "Text and offline scenarios ready";
+  var liveControls = el("hud-live-controls");
+  if (liveControls) liveControls.classList.add("hidden");
+  var hudState = el("hud-live-state");
+  var hudDot = el("hud-live-dot");
+  if (hudState) hudState.textContent = "Simulation";
+  if (hudDot) hudDot.className = "w-2.5 h-2.5 rounded-full bg-[#FFE600] border border-black";
+  updateHUDApiStatus("active", "MODE: Simulation");
+  showToast((reason || "Microphone unavailable.") + " Text simulation and offline scenarios ready.", "info");
+}
+
+function fallbackToBrowserSpeech(reason) {
+  if (!AppState.isListening) return;
+  stopAudioRuntime();
+  if (startBrowserSpeech(reason)) showToast((reason || "Deepgram is unavailable.") + " Using browser speech recognition.", "info");
+}
+
+function getDeepgramProxyUrl() {
+  var query = "?smart_format=true&interim_results=true&punctuate=true";
+  // A packaged Electron renderer can be loaded from file://, where deriving a
+  // socket URL from window.location would incorrectly produce file://.
+  if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+    var protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    if (window.location.host) return protocol + "//" + window.location.host + "/api/deepgram" + query;
+  }
+  return "ws://localhost:3000/api/deepgram" + query;
+}
+
+async function startDeepgramStream() {
+  if (AppState.secureEnvStatus && !AppState.secureEnvStatus.deepgram) {
+    fallbackToBrowserSpeech("DEEPGRAM_API_KEY is not configured on local server.");
+    return;
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.WebSocket || !window.MediaRecorder) {
+    fallbackToBrowserSpeech("Deepgram streaming is unsupported in this browser.");
+    return;
+  }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+    if (!AppState.isListening) {
+      stream.getTracks().forEach(function(track) { track.stop(); });
+      return;
+    }
+    if (!stream.getAudioTracks().length) throw new Error("No microphone audio track was returned");
+    AppState.mediaStream = stream;
+    startMicrophoneMeter(stream);
+    setMicrophoneStatus("Connecting Deepgram", true);
+    var socket = new WebSocket(getDeepgramProxyUrl());
+    socket.binaryType = "arraybuffer";
+    var hasFailedOver = false;
+    var connectTimer = window.setTimeout(function() {
+      failOver("Deepgram connection timed out.");
+    }, 10000);
+    function failOver(reason) {
+      if (hasFailedOver) return;
+      hasFailedOver = true;
+      window.clearTimeout(connectTimer);
+      if (AppState.isListening && AppState.deepgramSocket === socket) fallbackToBrowserSpeech(reason);
+    }
+    AppState.deepgramSocket = socket;
+    stream.getTracks().forEach(function(track) {
+      track.onended = function() { failOver("Microphone stream ended."); };
+    });
+    socket.onopen = function() {
+      window.clearTimeout(connectTimer);
+      if (!AppState.isListening || AppState.deepgramSocket !== socket) return;
+      try {
+        var options = { audioBitsPerSecond: 128000 };
+        if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) options.mimeType = "audio/webm;codecs=opus";
+        else if (MediaRecorder.isTypeSupported("audio/webm")) options.mimeType = "audio/webm";
+        else throw new Error("WebM audio recording is not supported");
+        var recorder = new MediaRecorder(stream, options);
+        var chunkCount = 0;
+        AppState.mediaRecorder = recorder;
+        console.info("[Ghost] Deepgram recorder started", { mimeType: recorder.mimeType || options.mimeType, socketUrl: getDeepgramProxyUrl() });
+        recorder.ondataavailable = function(event) {
+          if (!event.data || !event.data.size) return;
+          chunkCount += 1;
+          if (socket.readyState === WebSocket.OPEN) {
+            try {
+              socket.send(event.data);
+              console.debug("[Ghost] Deepgram audio chunk sent", { chunk: chunkCount, bytes: event.data.size, bufferedBytes: socket.bufferedAmount });
+            } catch (error) {
+              console.error("[Ghost] Failed to send Deepgram audio chunk", error);
+              failOver("Could not transmit microphone audio.");
+            }
+          } else if (socket.readyState === WebSocket.CONNECTING) {
+            console.warn("[Ghost] Deepgram audio chunk delayed while socket connects", { chunk: chunkCount, bytes: event.data.size });
+          } else {
+            console.error("[Ghost] Deepgram socket is unavailable for audio", { readyState: socket.readyState, chunk: chunkCount });
+            failOver("Deepgram connection was lost while sending audio.");
+          }
+        };
+        recorder.onerror = function(event) {
+          console.error("[Ghost] Microphone recorder failed", event.error || event);
+          failOver("Microphone recorder failed.");
+        };
+        recorder.onstart = function() { console.info("[Ghost] Microphone chunk capture is active."); };
+        recorder.onstop = function() { console.info("[Ghost] Microphone chunk capture stopped after " + chunkCount + " chunks."); };
+        recorder.start(250);
+        setMicrophoneStatus("Deepgram live", true);
+        var consoleLabel = el("console-listen-label");
+        if (consoleLabel) consoleLabel.textContent = "Deepgram stream active";
+        showToast("Deepgram live transcription connected.", "success");
+      } catch (error) {
+        failOver("Deepgram audio capture failed: " + error.message);
+      }
+    };
+    socket.onmessage = function(event) {
+      if (!AppState.isListening || typeof event.data !== "string") return;
+      try {
+        var data = JSON.parse(event.data);
+        var alternative = data.channel && data.channel.alternatives && data.channel.alternatives[0];
+        if (alternative && alternative.transcript) {
+          queueSpeechFragment(alternative.transcript, "LIVE", !data.is_final);
+        }
+      } catch (error) {
+        console.warn("[Ghost] Ignoring malformed Deepgram event.");
+      }
+    };
+    socket.onerror = function() {
+      failOver("Deepgram connection failed.");
+    };
+    socket.onclose = function(event) {
+      window.clearTimeout(connectTimer);
+      failOver("Deepgram stream closed (" + event.code + ").");
+    };
+  } catch (error) {
+    if (["NotAllowedError", "SecurityError", "NotFoundError", "NotReadableError", "OverconstrainedError"].includes(error.name)) {
+      console.warn("[Ghost] Microphone permission unavailable; using text simulator mode.");
+      enterSimulationMode("Microphone permission was denied.");
+    } else {
+      fallbackToBrowserSpeech("Could not start Deepgram audio.");
+    }
+  }
+}
+
+function formatDuration(milliseconds) {
+  var seconds = Math.max(0, Math.floor(milliseconds / 1000));
+  return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
+}
+
+function updateSessionClock() {
+  if (!AppState.sessionStartedAt) return;
+  var elapsed = formatDuration(Date.now() - AppState.sessionStartedAt);
+  var liveElapsed = el("hud-live-elapsed");
+  if (liveElapsed) liveElapsed.textContent = elapsed;
+}
+
+function activateSession() {
+  var btn = el("session-toggle-btn"); var idle = el("btn-idle-content"); var active = el("btn-active-content");
+  var objectiveInput = el("objective-input");
+  validateSessionInputs();
+  AppState.objective = objectiveInput ? String(objectiveInput.value).trim() : AppState.objective;
+  AppState.isListening = true;
+  AppState.captureMode = "connecting";
+  AppState.transcriptHistory = [];
+  AppState.sessionEntries = [];
+  AppState.currentEntryIndex = -1;
+  AppState.lastRequestId++;
+  clearTranscript(false);
+  AppState.sessionStartedAt = Date.now();
+  document.body.classList.add("session-live");
+  
+  if (btn) {
+    btn.setAttribute("aria-pressed", "true");
+    btn.setAttribute("aria-label", "Terminate session");
+    btn.classList.add("session-active");
+  }
+  if (idle) idle.classList.add("hidden");
+  if (active) active.classList.remove("hidden");
+  
+  var statusDot = el("header-status-dot"); var statusText = el("header-status-text");
+  if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-[#FF5C5C] border border-black animate-pulse";
+  if (statusText) statusText.textContent = "TRACKING";
+  
+  var hudDot = el("hud-live-dot"); var hudState = el("hud-live-state");
+  if (hudDot) hudDot.className = "w-2.5 h-2.5 rounded-full bg-[#22C55E] border border-black animate-pulse";
+  if (hudState) hudState.textContent = "Listening";
+  
+  var liveControls = el("hud-live-controls");
+  if (liveControls) liveControls.classList.remove("hidden");
+  
+  var objectiveDisplay = el("hud-objective-display");
+  if (objectiveDisplay) objectiveDisplay.textContent = AppState.objective;
+  
+  var listenLabel = el("console-listen-label");
+  if (listenLabel) listenLabel.textContent = "Checking speech capture configuration...";
+  
+  if (AppState.sessionTimer) clearInterval(AppState.sessionTimer);
+  AppState.sessionTimer = setInterval(updateSessionClock, 1000);
+  updateSessionClock();
+  
+  startConfiguredSpeechCapture();
+  showToast("Live session active. Monitoring conversation dynamics.", "success");
+}
+
+function stopSessionCapture() {
+  AppState.isListening = false;
+  AppState.captureMode = "idle";
+  AppState.lastRequestId++;
+  if (AppState.sessionTimer) clearInterval(AppState.sessionTimer);
+  AppState.sessionTimer = null;
+  stopAudioRuntime();
+  AppState.sessionStartedAt = 0;
+  document.body.classList.remove("session-live");
+  
+  var idle = el("btn-idle-content"); var active = el("btn-active-content");
+  if (idle) idle.classList.remove("hidden");
+  if (active) active.classList.add("hidden");
+  
+  var btn = el("session-toggle-btn");
+  if (btn) {
+    btn.setAttribute("aria-pressed", "false");
+    btn.setAttribute("aria-label", "Start session");
+    btn.classList.remove("session-active");
+  }
+  
+  var statusDot = el("header-status-dot"); var statusText = el("header-status-text");
+  if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-neutral-400 border border-black";
+  if (statusText) statusText.textContent = "IDLE";
+  
+  var liveControls = el("hud-live-controls");
+  if (liveControls) liveControls.classList.add("hidden");
+  
+  var listenLabel = el("console-listen-label");
+  var listenDot = el("console-listen-dot");
+  if (listenLabel) listenLabel.textContent = "Microphone standby";
+  if (listenDot) listenDot.className = "w-2.5 h-2.5 rounded-full bg-neutral-400 border border-black";
+}
+
+function endSessionWithSummary(startNew) {
+  var duration = AppState.sessionStartedAt ? Date.now() - AppState.sessionStartedAt : 0;
+  if (AppState.isListening) stopSessionCapture();
+  AppState.pendingFreshSession = Boolean(startNew);
+  if (!duration && AppState.sessionEntries.length) {
+    duration = AppState.sessionEntries.reduce(function(max, entry) {
+      return Math.max(max, Date.now() - Date.parse(entry.timestamp));
+    }, 0);
+  }
+  void persistSessionReport(duration);
+  showSessionSummary(duration);
+}
+
+function showSessionSummary(duration) {
+  var entries = AppState.sessionEntries;
+  var objections = entries.filter(function(entry) { return entry.status === "OBJECTION"; });
+  var leverage = entries.filter(function(entry) { return entry.status === "LEVERAGE"; });
+  var durationNode = el("summary-duration");
+  if (durationNode) durationNode.textContent = formatDuration(duration || 0);
+  if (el("summary-statements")) el("summary-statements").textContent = String(entries.length);
+  if (el("summary-objections")) el("summary-objections").textContent = String(objections.length);
+  if (el("summary-leverage")) el("summary-leverage").textContent = String(leverage.length);
+  var list = el("summary-takeaways");
+  if (list) {
+    list.textContent = "";
+    var unique = [];
+    entries.forEach(function(entry) {
+      if (entry.nudge && !unique.includes(entry.nudge)) unique.push(entry.nudge);
+    });
+    (unique.length ? unique : ["No tactical signals were recorded in this session."]).forEach(function(takeaway) {
+      var item = document.createElement("li");
+      item.className = "flex items-center gap-2 py-0.5";
+      var marker = document.createElement("span");
+      marker.className = "w-2 h-2 bg-black inline-block flex-shrink-0";
+      item.appendChild(marker);
+      item.appendChild(document.createTextNode(takeaway));
+      list.appendChild(item);
+    });
+  }
+  var freshButton = el("summary-new-session-btn");
+  if (freshButton) freshButton.classList.toggle("hidden", !AppState.pendingFreshSession);
+  var modal = el("session-summary-modal");
+  if (modal) { modal.classList.remove("hidden"); modal.classList.add("flex"); }
+}
+
+function closeSummaryModal() {
+  var modal = el("session-summary-modal");
+  if (modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); }
+  AppState.pendingFreshSession = false;
+}
+
+function startSessionAfterSummary() {
+  closeSummaryModal();
+  clearTranscript();
+  AppState.sessionEntries = [];
+  AppState.currentEntryIndex = -1;
+  resetHUDToStandby();
+  activateSession();
+}
+
+function buildSessionMarkdown(duration) {
+  var entries = AppState.sessionEntries;
+  var objections = entries.filter(function(entry) { return entry.status === "OBJECTION"; });
+  var leverage = entries.filter(function(entry) { return entry.status === "LEVERAGE"; });
+  var startedAt = entries.length ? new Date(entries[0].timestamp).toLocaleString() : new Date().toLocaleString();
+  var takeaways = [];
+  entries.forEach(function(entry) { if (entry.nudge && !takeaways.includes(entry.nudge)) takeaways.push(entry.nudge); });
+  var transcript = entries.map(function(entry) {
+    var signal = entry.status === "IDLE" ? "" : " [" + entry.status + (entry.nudge ? ": " + entry.nudge : "") + "]";
+    return "- **" + new Date(entry.timestamp).toLocaleTimeString() + "** (" + entry.source + ") " + entry.text + signal;
+  });
+  var markdown = [
+    "# Ghost Negotiation Session Report",
+    "",
+    "- **Objective:** " + AppState.objective,
+    "- **Started:** " + startedAt,
+    "- **Duration:** " + (duration ? formatDuration(duration) : (el("summary-duration") ? el("summary-duration").textContent : "00:00")),
+    "- **Statements Analyzed:** " + entries.length,
+    "- **Objections Handled:** " + objections.length,
+    "- **Leverage Points Captured:** " + leverage.length,
+    "",
+    "## Strategic Takeaways",
+    ...(takeaways.length ? takeaways.map(function(item) { return "- " + item; }) : ["- No tactical signals recorded."]),
+    "",
+    "## Full Transcript Stream",
+    ...(transcript.length ? transcript : ["- No statements recorded."]),
+    ""
+  ].join("\n");
+  return markdown;
+}
+
+async function persistSessionReport(duration) {
+  try {
+    var response = await fetch("/api/session-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ markdown: buildSessionMarkdown(duration) })
+    });
+    if (!response.ok) throw new Error("Report save failed");
+    showToast("Session summary saved locally.", "success");
+  } catch (error) {
+    console.warn("[Ghost] Could not auto-save session report:", error);
+  }
+}
+
+function exportSessionReport() {
+  var markdown = buildSessionMarkdown();
+  var blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement("a");
+  link.href = url;
+  link.download = "ghost-negotiation-report-" + new Date().toISOString().slice(0, 10) + ".md";
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(function() {
+    URL.revokeObjectURL(url);
+    if (link.parentNode) link.parentNode.removeChild(link);
+  }, 1000);
+}
+
+function startFreshNewSession() {
+  if (AppState.isListening) stopSessionCapture();
+  closeSummaryModal();
+  clearTranscript(false);
+  AppState.sessionEntries = [];
+  AppState.currentEntryIndex = -1;
+  resetHUDToStandby();
+  activateSession();
+}
+
+function terminateSession() {
+  endSessionWithSummary(false);
+}
+
+function toggleSession() {
+  if (AppState.isListening) terminateSession();
+  else activateSession();
+}
+
+function simulateLiveSpeechInput() {
+  var inp = el("live-speech-simulator-input");
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) return;
+  
+  inp.value = "";
+  ingestTranscript(text, "LIVE");
+}
+
+// =============================================
+// SECTION 14: PRIVACY & RAM SCRUBBING GUARD
+// =============================================
+window.addEventListener("beforeunload", function() {
+  AppState.isListening = false;
+  AppState.transcriptHistory = [];
+  AppState.sessionEntries = [];
+  if (AppState.speechBufferTimer) clearTimeout(AppState.speechBufferTimer);
+  AppState.speechBufferTimer = null;
+  AppState.speechBuffer = "";
+  AppState.speechCommittedBuffer = "";
+  AppState.speechHadFinalFragment = false;
+  stopAudioRuntime();
+});
+
+// =============================================
+// SECTION 15: OBJECTIVE SYNC
+// =============================================
+function initObjectiveSync() {
+  var oi = el("objective-input"); var od = el("hud-objective-display");
+  if (oi && od) {
+    oi.addEventListener("input", function() {
+      var v = String(oi.value).trim();
+      od.textContent = v.length > 0 ? v : "No objective defined.";
+      AppState.objective = v;
+    });
+  }
+}
+
+// =============================================
+// SECTION 16: BROWSER COMPATIBILITY
+// =============================================
+function checkBrowserCompatibility() {
+  var SRAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SRAPI) {
+    console.warn("[Ghost] Browser speech recognition unavailable; text and offline scenarios remain fully active.");
+    var btn = el("session-toggle-btn");
+    if (btn) {
+      btn.title = "Microphone speech unavailable in this browser. Use text simulation or offline scenarios.";
+    }
+  }
+}
+
+// =============================================
+// SECTION 17: BOOTSTRAP INITIALIZATION
+// =============================================
+document.addEventListener("DOMContentLoaded", function() {
+  startClockEngine();
+  initObjectiveSync();
+  loadSecureEnvStatus();
+  checkBrowserCompatibility();
+  console.info("%c[Ghost] Conversational Copilot HUD (Neo-Brutalist Edition)\n%cRAM Compliance Buffer: ACTIVE | Real-World Scenarios: LOADED | Gemini Advisor: ENABLED","color:#000000;font-weight:900;font-size:14px;background:#FFE600;padding:2px 6px;","color:#333;font-size:11px;");
+  showToast("Ghost initialized. Try the Real-World Scenarios below or activate live mic.", "info");
+});
+  </script>
+</body>
+</html>
