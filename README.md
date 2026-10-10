@@ -57,21 +57,7 @@ Ghost is a frictionless, dual-delivery cognitive companion.
 
 ---
 
-# Demo
 
-### Demo Video
-
-[Watch Project Demo](https://www.youtube.com/watch?v=VIDEO_ID)
-
-### Screenshots
-
-![Screenshot 1](./assets/screenshot-1.png)
-
----
-
-# Live Project
-
-[Visit Live Project](https://your-project-url.com/)
 
 ---
 
