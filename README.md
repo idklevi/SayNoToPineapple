@@ -1,52 +1,20 @@
-<<<<<<< HEAD
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# DEFINE 4.0 — Team SayNoToPineapple
 
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/7e4dd929-56ac-4692-a255-0babed4dc8b3
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Copy `.env.example` to `.env` and set `GEMINI_API_KEY` if you want live Gemini guidance. The HUD remains usable offline without it.
-3. Launch the local server and floating Electron HUD together:
-   `npm start`
-
-`npm run dev` starts only the local Express/Vite server at `http://localhost:3000`; `npm run electron` starts only the HUD window.
-=======
-# DEFINE 4.0
-
-The official project submission repository for **DEFINE 4.0 — The World's Realest Hackathon**.
-
----
-
-# Conversational Decision-Support Assistant
-
-<!-- Add your project cover image below -->
+# Ghost HUD — The Silent AI Copilot for High-Stakes Negotiations
 
 ![Project Cover](./assets/cover.png)
 
 ## Team Information
 
 - **Team Name**: SayNoToPineapple
-
 - **Track**: General (PR 007: Conversational Decision-Support Assistant)
-
 
 ## Team Members
 
 | Name | Role | GitHub | LinkedIn |
 |------|------|--------|----------|
-| Neeraj Rajeev | Role | [idklevi](https://github.com/idklevi) | [Profile](https://linkedin.com/in/idkneeraj) |
-| Afna C| Role | [afnac](https://github.com/afnac) | [Profile](https://linkedin.com/in/afna-c) |
+| Neeraj Rajeev | Full-Stack, Architecture & Engineering | [idklevi](https://github.com/idklevi) | [Profile](https://linkedin.com/in/idkneeraj) |
+| Afna C | UI Design & Operations | [afnac](https://github.com/afnac) | [Profile](https://linkedin.com/in/afna-c) |
 
 ---
 
@@ -54,27 +22,38 @@ The official project submission repository for **DEFINE 4.0 — The World's Real
 
 ## Overview
 
-Project PR 007 is a 100% free, real-time cognitive copilot that transforms live conversations into successful outcomes by flashing subtle, actionable strategy suggestions directly in your peripheral vision. It captures ambient conversation text using native browser hardware, processes it instantly against your custom-defined targets, and flags critical objections or tactical advice without distracting your attention from the speaker. The system bridges the critical gap between active listening, real-time tactical evaluation, and persuasive delivery during high-stakes corporate interactions.
+**Ghost HUD** is a production-grade, real-time conversational decision-support assistant built for high-stakes negotiations, executive boardrooms, and live interviews.
+
+It runs as a transparent, frameless, always-on-top overlay. Ghost listens to ambient conversation, scrubs PII locally in RAM, streams audio through a resilient WebSocket proxy, and flashes instant, psychology-backed counter-scripts the moment an objection lands.
+
+> Deals die in 5-second pauses. Ghost ensures you never freeze.
 
 ## Problem Statement
 
-- **What is the problem?** During intense business discussions, participants experience heavy cognitive friction because they must simultaneously listen intently, spot hidden conversational subtext, and formulate an optimal counter-response. This overwhelming mental load frequently leads to missed client objections, dropped negotiation leverage, and flawed real-time decision-making.
+- **What is the problem?**
+  During intense business discussions, participants face heavy cognitive friction: they must listen intently, spot hidden subtext, and formulate the best counter-response under pressure.
+- **Who is affected?**
+  Sales professionals, founders, executive leaders, and project managers handling high-stakes customer calls or investor pitches.
+- **Why is solving it important?**
+  One weak answer or a 5-second pause can kill a deal or compromise profit margins.
+- **What are the limitations of existing solutions?**
+  Current tools are post-call note-takers that offer no live tactical value. Real-time alternatives clutter the screen with walls of text and compromise enterprise privacy by sending sensitive audio to unsafe third-party cloud endpoints.
 
-- **Who is affected?** This issue directly impacts sales professionals, customer support leads, freelance consultants, and project managers who regularly navigate high-stakes negotiations and client-facing alignment sessions.
+## Solution & Architectural Choices
 
-- **Why is solving it important?** Resolving this issue prevents lost revenue from stalled deals, protects profit margins, and gives professionals the absolute confidence to pivot fluidly when facing tough client pushback.
+Ghost is a frictionless, dual-delivery cognitive companion.
 
-- **What are the limitations of existing solutions?** Current AI options are almost exclusively retrospective note-takers or summary bots. They only deliver static insights *after* a meeting has concluded, offering zero value when trying to save a live, deteriorating negotiation. Furthermore, traditional real-time tools clutter screens with heavy, distracting text walls and route sensitive data through unsafe third-party cloud servers, violating strict enterprise privacy standards.
+1. **Dual-Delivery Architecture (Web + Native macOS)**
+   *Why?* A hybrid model lets users open the app instantly in any browser (`localhost:5173`) or launch the packaged native macOS app (`.dmg` / `.app`) with native microphone entitlements and automated session markdown exports.
 
-## Solution
+2. **Resilient Audio Proxy & Deepgram Integration**
+   *Why Deepgram?* Its WebSocket speech-to-text pipeline gives ultra-low-latency streaming. To prevent data loss at startup, our custom Express/TypeScript proxy uses **early-chunk queuing** (holding early audio until Deepgram's upstream socket is fully open) along with automatic WebM MIME-type fallback.
 
-Our proposed solution introduces an invisible, privacy-first cognitive assistant that acts as a real-time conversational navigation engine. 
+3. **Local RAM Privacy Shield**
+   *Why?* Enterprise security demands strong data safety. Transcripts are held in memory with PII scrubbed before any analysis, and the active shield status is always visible on the HUD.
 
-The software operates through a fast, 100% free four-stage pipeline:
-1. **Local Audio Capture:** The browser's native Web Speech API continuously translates spoken dialogue to text inside local system memory with zero runtime platform costs.
-2. **In-Memory Masking:** Lightweight, client-side Regex PII filters scrub personal identifying datasets (such as phone formats or financial strings) directly in browser RAM before any network transport occurs, maintaining absolute data security.
-3. **Objective Alignment Engine:** The anonymized text block flows through optimized serverless LLM calls (via OpenRouter and Meta Llama 3.1 8B Instruct), which dynamically compare the conversational trajectory against the user's explicit strategic target.
-4. **Peripheral Visual Feedback:** Instead of forcing users to read distracting blocks of text, the frontend UI uses responsive CSS animations to flash subtle, high-contrast visual cues around the viewport borders, serving up critical tactical advice right in their side vision.
+4. **Offline Fallback (Google Gemini API)**
+   *Why Gemini?* It powers the tactical counter-script engine. So the live demo never fails on network drops or API rate limits (429 errors), the proxy automatically switches to a local simulation mode when quotas are exhausted, and the screen never shows a broken error message.
 
 ---
 
@@ -84,17 +63,9 @@ The software operates through a fast, 100% free four-stage pipeline:
 
 [Watch Project Demo](https://www.youtube.com/watch?v=VIDEO_ID)
 
-> Replace `VIDEO_ID` with your YouTube video ID.
-
 ### Screenshots
 
-<!-- Add screenshots of your project here -->
-
 ![Screenshot 1](./assets/screenshot-1.png)
-
-![Screenshot 2](./assets/screenshot-2.png)
-
-![Screenshot 3](./assets/screenshot-3.png)
 
 ---
 
@@ -110,32 +81,38 @@ The software operates through a fast, 100% free four-stage pipeline:
 
 | Category | Technologies |
 |----------|--------------|
-| **Frontend** | Technologies |
-| **Backend** | Technologies |
-| **Database** | Technologies |
-| **APIs / Services** | Technologies |
-| **AI / ML** | Technologies |
-| **DevOps / Deployment** | Technologies |
-| **Other Tools** | Technologies |
+| **Frontend** | React, Vite, Tailwind CSS, Inline-Script Renderer |
+| **Backend** | Node.js, Express, TypeScript, Local WebSocket Proxy |
+| **Desktop Wrapper** | Electron (`.dmg` / `.app` macOS distribution package) |
+| **APIs / Services** | Deepgram WebSocket Speech-to-Text API, Google Gemini API |
+| **DevOps / Tooling** | npm, systemd-boot / local process management |
 
 ## System Architecture
 
-<!-- Add your architecture diagram here -->
-
-![System Architecture](./assets/architecture.png)
+```text
+[ Microphone Audio (Browser / macOS App) ]
+                  │
+                  ▼
+      [ MediaRecorder / WebM Chunks ]
+                  │
+                  ▼  (WebSocket Stream)
+        [ Express / TS Local Proxy ]
+        (Early-Chunk Queuing & PII Scrubbing)
+                  │
+                  ▼
+   [ Deepgram STT WebSocket Proxy ] ──► [ Google Gemini Counter-Script Engine ]
+                  │
+                  ▼
+[ Frameless Always-on-Top Electron / Web HUD ]
+```
 
 ## Key Features
 
-- Feature 1
-
-- Feature 2
-
-- Feature 3
-
-- Feature 4
-
-- Feature 5
-
+- **Frameless Always-on-Top HUD:** Draggable, transparent overlay that sits over video calls without blocking your window.
+- **Deepgram WebSocket Proxy:** Low-latency speech-to-text with early-chunk queuing and automatic fallback.
+- **Local RAM Privacy Shield:** PII scrubbing in memory before analysis.
+- **Global Panic Shortcut:** Press `ESC` to instantly hide or manage the overlay.
+- **One-Tap Scenario Triggers:** Built-in simulation buttons for Budget Objection, Pushback, and Competitor counters, for reliable live demos.
 
 ---
 
@@ -143,19 +120,53 @@ The software operates through a fast, 100% free four-stage pipeline:
 
 ## Prerequisites
 
-Make sure the following are installed before running the project:
+- Node.js (v18 or higher recommended)
+- npm
 
-- Requirement 1
-
-- Requirement 2
-
-- Requirement 3
-
-
-## Installation
+## Installation & Running
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
->>>>>>> 4d718514aed03c1d8a843ddc7d07f5708be8a934
+git clone https://github.com/idklevi/ghost-hud.git
+cd ghost-hud
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the root directory and add your API keys:
+
+```env
+DEEPGRAM_API_KEY=your_deepgram_key_here
+GEMINI_API_KEY=your_gemini_key_here
+```
+
+### 4. Run in Development Mode
+
+Open two terminals.
+
+**Terminal 1 — Backend & dev server:**
+
+```bash
+npm run dev
+```
+
+**Terminal 2 — Electron desktop client:**
+
+```bash
+npm run electron
+```
+
+### 5. Build for Production
+
+To package the native macOS desktop app:
+
+```bash
+npm run build
+```
